@@ -17,14 +17,37 @@
                 <li class="list-group-item">Appointment Number: {{ i.appointment_number }}</li>
             {% endfor %}
         </ul>
-
+        <div class="container mt-4">
+          <div class="row justify-content-center">
+              <div class="col-12 col-md-8 col-lg-6">
+                  <div class="card">
+                      <div class="card-body text-center">
+                          <img src="{{user.profile_photo.url}}" alt="{{user.first_name}}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                          <h3 class="card-title">{{ user.first_name }} {{ user.last_name }}</h3>
+                          <p class="card-text">{{ user.email }}</p>
+      
+                          <ul class="list-group list-group-flush">
+                              <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+                              <li class="list-group-item"><strong>Gender:</strong> {{ user.gender }}</li>
+                              <li class="list-group-item"><strong>Member Status:</strong> {{ user.is_Member_Patient }}</li>
+                              <li class="list-group-item"><strong>Mobile Number:</strong> {{ user.mobile_number }}</li>
+                              <li class="list-group-item"><strong>Patient Type:</strong> {{ user.patient_type }}</li>
+                              <li class="list-group-item"><strong>Date Joined:</strong> {{ user.date_joined }}</li>
+                              <li class="list-group-item"><strong>Member Code:</strong> {{ user.member_code }}</li>
+                          </ul>
+      
+                         
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
                
         <section class="newsletter" aria-label="newsletter">
             <div class="container">
     
               <div class="wrapper">
                 <h2 class="h2 section-title">Karibu Juction Dental</h2>
-    
                 <p class="section-text"> </p>your smile is our priority
               </div>
     
@@ -41,32 +64,6 @@
                   }
                   </script>
               </form>
-              <div class="container mt-4">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-md-8 col-lg-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="{{user.profile_photo.url}}" alt="{{user.first_name}}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
-                                <h3 class="card-title">{{ user.first_name }} {{ user.last_name }}</h3>
-                                <p class="card-text">{{ user.email }}</p>
-            
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
-                                    <li class="list-group-item"><strong>Gender:</strong> {{ user.gender }}</li>
-                                    <li class="list-group-item"><strong>Member Status:</strong> {{ user.is_Member_Patient }}</li>
-                                    <li class="list-group-item"><strong>Mobile Number:</strong> {{ user.mobile_number }}</li>
-                                    <li class="list-group-item"><strong>Patient Type:</strong> {{ user.patient_type }}</li>
-                                    <li class="list-group-item"><strong>Date Joined:</strong> {{ user.date_joined }}</li>
-                                    <li class="list-group-item"><strong>Member Code:</strong> {{ user.member_code }}</li>
-                                </ul>
-            
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
             </div>
           </section>
         </article>

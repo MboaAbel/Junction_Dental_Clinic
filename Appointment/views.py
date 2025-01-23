@@ -218,18 +218,6 @@ def create_appointment(request):
 
         # Send SMS and email notifications
         try:
-            sms_message = (
-                f"Hello {full_name},\n"
-                f"Your appointment has been confirmed.\n"
-                f"Appointment Number: {appointment_number}\n"
-                f"Date: {date_of_appointment}\n"
-                f"Time: {time_of_appointment}\n"
-                f"Doctor: {doc_instance}\n"
-                f"Concern: {worry_instance}\n"
-                f"Thank you for choosing us!"
-            )
-            send_sms(mobile_number, sms_message)  # Assuming send_sms is implemented correctly
-
             subject = "Appointment Confirmation"
             message = (
                 f"Dear {full_name},\n\n"
@@ -251,6 +239,20 @@ def create_appointment(request):
                 [email, 'mboatechnologies@gmail.com'],  # Recipients
                 fail_silently=False,
             )
+            
+            sms_message = (
+                f"Hello {full_name},\n"
+                f"Your appointment has been confirmed.\n"
+                f"Appointment Number: {appointment_number}\n"
+                f"Date: {date_of_appointment}\n"
+                f"Time: {time_of_appointment}\n"
+                f"Doctor: {doc_instance}\n"
+                f"Concern: {worry_instance}\n"
+                f"Thank you for choosing us!"
+            )
+            send_sms(mobile_number, sms_message)  # Assuming send_sms is implemented correctly
+
+            
             messages.success(request, "Appointment confirmed. Notifications sent successfully.")
         except Exception as e:
             messages.error(request, f"Failed to send notifications: {str(e)}")
