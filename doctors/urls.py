@@ -15,7 +15,6 @@ from .views import (
     AppointmentActionView,
     MyPatientsView,
     AppointmentHistoryView,
-    DoctorChangePasswordView,
     PrescriptionCreateView,
     PrescriptionDetailView,
 )
@@ -76,11 +75,6 @@ urlpatterns = [
         "my-patients/<int:patient_id>/history/",
         AppointmentHistoryView.as_view(),
         name="appointment-history",
-    ),
-    path(
-        "change-password/",
-        DoctorChangePasswordView.as_view(),
-        name="change-password",
     ),
     path(
         "appointment/<int:booking_id>/prescription/add/",

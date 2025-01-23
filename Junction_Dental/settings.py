@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
     'sendsms',
     'africastalking',
 
@@ -42,6 +44,8 @@ INSTALLED_APPS = [
     'Clinic',
     'Appointment',
     'Dashboard',
+    'doctors',
+    'bookings',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',  # Required for social authentication

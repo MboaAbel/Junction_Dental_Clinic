@@ -1,17 +1,18 @@
 from django.db import models
 from django.conf import settings
 from ckeditor.fields import RichTextField
+from Accounts.models import User
 
 
 class Booking(models.Model):
     doctor = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="appointments",
         limit_choices_to={"role": "doctor"},
     )
     patient = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="patient_appointments",
         limit_choices_to={"role": "patient"},
@@ -45,12 +46,12 @@ class Prescription(models.Model):
         "Booking", on_delete=models.CASCADE, related_name="prescription"
     )
     doctor = models.ForeignKey(
-        "accounts.User",
+        "Accounts.User",
         on_delete=models.CASCADE,
         related_name="prescriptions_given",
     )
     patient = models.ForeignKey(
-        "accounts.User",
+        "Accounts.User",
         on_delete=models.CASCADE,
         related_name="prescriptions_received",
     )

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import User
+from Accounts.models import User
 from doctors.models import Education, Experience
 
 

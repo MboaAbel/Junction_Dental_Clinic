@@ -15,6 +15,7 @@ local_settings.py
 # Media and static files
 
 
+venv
 
 # Virtual environments
 .venv/

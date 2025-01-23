@@ -1,7 +1,7 @@
 from datetime import timedelta
 from django.db import models
 
-from accounts.models import User
+from Accounts.models import User
 
 
 class TimeRange(models.Model):

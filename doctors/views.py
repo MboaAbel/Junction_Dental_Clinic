@@ -17,7 +17,7 @@ from django.views.generic import (
     DetailView,
     View,
     CreateView,
-    UpdateView,
+    UpdateView, 
 )
 from django.views.generic.base import TemplateView
 from rest_framework.generics import UpdateAPIView
@@ -29,7 +29,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 
 from bookings.models import Booking, Prescription
-from core.decorators import user_is_doctor
+from Dashboard.decorators import user_is_doctor
 from doctors.forms import DoctorProfileForm, PrescriptionForm
 from doctors.models import Experience
 from doctors.models.general import *
@@ -40,9 +40,8 @@ from doctors.serializers import (
     SpecializationSerializer,
 )
 from mixins.custom_mixins import DoctorRequiredMixin
-from patients.forms import ChangePasswordForm
 from utils.htmx import render_toast_message_for_api
-from accounts.models import User
+from Accounts.models import User
 
 days = {
     0: Sunday,

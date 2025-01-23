@@ -1,6 +1,6 @@
 from django import forms
 
-from accounts.models import User
+from Accounts.models import User
 from bookings.models import Prescription
 from ckeditor.widgets import CKEditorWidget
 

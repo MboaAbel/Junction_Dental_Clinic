@@ -1,6 +1,6 @@
 from django.db import models
 
-from accounts.models import User
+from Accounts.models import User
 
 
 class Education(models.Model):

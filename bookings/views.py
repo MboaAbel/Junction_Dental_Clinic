@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic.base import TemplateView
 
-from accounts.models import User
+from Accounts.models import User
 from doctors.models.general import TimeRange
 from mixins.custom_mixins import PatientRequiredMixin
 from .models import Booking
