@@ -84,7 +84,7 @@ def create_appointment(request):
         doc_instance = DoctorReg.objects.get(id=doctor_id)
         worry_instance = Specialization.objects.get(id=worry_id)
 
-        # Validate that date_of_appointment is greater than today's date
+        # Validate that *date_of_appointment is greater than today's date
         try:
             appointment_date = datetime.strptime(date_of_appointment, '%Y-%m-%d').date()
             today_date = datetime.now().date()
