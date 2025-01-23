@@ -10,7 +10,7 @@
           </li>
 
           <li>
-            <a href="#" class="navbar-link" data-nav-link>Shop</a>
+            <a href="/Shop" class="navbar-link" data-nav-link>Shop</a>
           </li>
 
           <li>
@@ -18,18 +18,19 @@
           </li>
 
           <li>
-            <a href="#" class="navbar-link" data-nav-link>History</a>
+            <a href="#" class="navbar-link" data-nav-link>Clinic</a>
           </li>
 
           <li>
-            <a href="#" class="navbar-link" data-nav-link>Academy</a>
+            <a href="#" class="navbar-link" data-nav-link>History</a>
           </li>
         </ul>
       </nav>
-        {% if request.user.is_authenticated and request.user.is_superuser %}
-        <a href="{% url 'doctor_home' %}" class="btn btn-secondary">{{user.first_name}}</a>
+        {% if not request.user.is_authenticated and not request.user.is_superuser %}
+        <a href="{% url 'user_profile_update' %}" class="btn btn-secondary">{{user.username}}</a>
+        
                   {% else %}
-                  <a href="{% url 'user_profile_update' %}" class="btn btn-secondary">{{user.username}}</a>
+                  <a href="{% url 'doctor_home' %}" class="btn btn-secondary">{{user.first_name}}</a>
                   {% endif %}
 
       <button class="nav-toggle-btn" aria-label="Toggle menu" data-nav-toggler>

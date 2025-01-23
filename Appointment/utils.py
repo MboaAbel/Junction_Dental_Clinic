@@ -12,9 +12,10 @@ def send_sms(phone_number, message):
 
 
 CARRIER_EMAIL_GATEWAYS = {
-    "safaricom": "{number}@safaricom.sms.gateway",  # Replace with Safaricom's actual SMS gateway
-    "airtel": "{number}@airtel.sms.gateway",        # Replace with Airtel's SMS gateway
-    "telkom": "{number}@telkom.sms.gateway",        # Replace with Telkom's SMS gateway
+    "safaricom":"sms@{number}.safaricom.com",
+    "airtel":"sms@{number}@ke.airtel.com",
+    "telcom": "sms@{number}@sms.telkom.co.ke",
+                
 }
 
 def get_carrier_from_number(phone_number):

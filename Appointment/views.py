@@ -11,8 +11,6 @@ from Accounts.models import User
 from django.core.mail import send_mail
 from .utils import send_sms,send_sms_via_email
 import africastalking
-from decouple import config
-from django.core.mail import send_mail
 from datetime import datetime
 
 
@@ -250,7 +248,7 @@ def create_appointment(request):
                 f"Concern: {worry_instance}\n"
                 f"Thank you for choosing us!"
             )
-            send_sms(mobile_number, sms_message)  # Assuming send_sms is implemented correctly
+            send_sms_via_email(mobile_number, sms_message)  # Assuming send_sms is implemented correctly
 
             
             messages.success(request, "Appointment confirmed. Notifications sent successfully.")
