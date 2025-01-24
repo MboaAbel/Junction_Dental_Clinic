@@ -1,7 +1,3 @@
-
-
-
-
 /*-----------------------------------*\
   #CUSTOM PROPERTY
 \*-----------------------------------*/
@@ -42,6 +38,7 @@
 
   --ff-roboto: "Roboto", sans-serif;
   --ff-poppins: "Poppins", sans-serif;
+  --ff-open-sans: 'Open Sans', sans-serif;
 
   --fs-1: 4rem;
   --fs-2: 3.6rem;
@@ -145,6 +142,7 @@ body {
   background-color: var(--white);
   color: var(--sonic-silver);
   font-size: 1.5rem;
+  font-family: var(--ff-open-sans);
 }
 
 
@@ -171,7 +169,7 @@ body {
 .h1,
 .h2,
 .h3 {
-  font-family: var(--ff-poppins);
+  font-family: var(--ff-open-sans);
   line-height: 1.2;
 }
 
@@ -216,6 +214,11 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.join-now-btn {
+  border-radius: 20px;
+  padding: 20px 40px;
 }
 
 
@@ -320,16 +323,25 @@ body {
   background-size: cover;
   background-position: center;
   padding-block-end: calc(var(--section-padding) / 2);
+  text-align: center;
+  color: var(--oxford-blue-1);
 }
 
 .hero-content { margin-block-end: 50px; }
 
-.hero-title { margin-block: 15px 30px; }
+.hero-title {
+  font-family: var(--ff-open-sans);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-700);
+  margin-block: 15px 30px;
+}
 
 .hero-text {
-  font-size: var(--fs-6);
-  line-height: 1.45;
+  font-family: var(--ff-open-sans);
+  font-size: var(--fs-4);
+  line-height: 1.5;
   margin-block-end: 40px;
+  color: var(--sonic-silver);
 }
 
 .hero-form {
@@ -338,6 +350,7 @@ body {
   padding: 15px;
   border-radius: var(--radius-4);
   box-shadow: var(--shadow-3);
+  text-align: left;
 }
 
 .hero-form .email-field {
@@ -347,9 +360,16 @@ body {
   padding-inline: 15px;
   border-radius: var(--radius-4);
   margin-block-end: 15px;
+  font-family: var(--ff-open-sans);
+  font-size: var(--fs-5);
 }
 
-.hero-form .btn { width: 100%; }
+.hero-form .btn {
+  width: 100%;
+  font-family: var(--ff-open-sans);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-600);
+}
 
 
 

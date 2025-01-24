@@ -1,19 +1,16 @@
-{% load i18n static  %}
+{% load i18n static %}
 
-   <section class="section hero" id="home"
-               style=" background-image: url('{% static 'clinic/images/hero-bg.png'%}')"
-        aria-label="hero">
-        <div class="container">
-          <div class="hero-content">
-            <p  class="section-subtitle">Welcome</p>
+<section class="section hero" id="home" style="background-image: url('{% static 'clinic/images/hero-bg.png' %}')" aria-label="hero">
+    <div class="container">
+        <div class="hero-content">
+            <p class="section-subtitle">Welcome</p>
             <h1 class="h1 hero-title">Your smile is our priority</h1>
-              <button type="submit" class="btn"><a href="{% url 'appointment' %}">Book Appointment</a></button>
-
-          </div>
-
-          <figure class="hero-banner" >
-            <img src="{% static 'clinic/images/hero-banner.png'%}"  width="587" height="850" alt="hero banner" class="w-100 ">
-          </figure>
+            <p class="hero-text">Experience the best dental care with our expert team.</p>
+            <button type="submit" class="btn"><a href="{% url 'appointment' %}">Book Appointment</a></button>
         </div>
-      </section>
-      
+        <figure class="hero-banner">
+            <img src="{% static 'clinic/images/hero-banner.png' %}" width="587" height="850" alt="hero banner" class="w-100">
+        </figure>
+    </div>
+</section>
+
