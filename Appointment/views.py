@@ -1,6 +1,6 @@
 from .models import Appointment
 import random
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from Clinic.models import Page, Specialization
 from django.contrib import messages
@@ -12,71 +12,6 @@ from django.core.mail import send_mail
 from .utils import send_sms,send_sms_via_email
 import africastalking
 from datetime import datetime
-
-
-
-# def create_appointment(request):
-#     doctorview = DoctorReg.objects.all()
-#     worry = Specialization.objects.all()
-#     page = Page.objects.all()
-
-#     if request.method == "POST":
-#         appointment_number = random.randint(100000000, 999999999)
-#         full_name = request.POST.get('full_name')
-#         email = request.POST.get('email')
-#         mobile_number = request.POST.get('mobile_number')
-#         date_of_appointment = request.POST.get('date_of_appointment')
-#         time_of_appointment = request.POST.get('time_of_appointment')
-#         doctor_id = request.POST.get('doctor_id')
-#         worry_id = request.POST.get('worry_need')
-#         additional_msg = request.POST.get('additional_msg')
-
-#         # Retrieve the DoctorReg instance using the doctor_id
-#         doc_instance = DoctorReg.objects.get(id=doctor_id)
-#         worry_instance = Specialization.objects.get(id=worry_id)
-
-#         # Validate that date_of_appointment is greater than today's date
-#         try:
-#             appointment_date = datetime.strptime(date_of_appointment, '%Y-%m-%d').date()
-#             today_date = datetime.now().date()
-
-#             if appointment_date <= today_date:
-#                 # If the appointment date is not in the future, display an error message
-#                 messages.error(request, "Please select a date in the future for your appointment")
-#                 return redirect('appointment')  # Redirect back to the appointment page
-#         except ValueError:
-#             # Handle invalid date format error
-#             messages.error(request, "Invalid date format")
-#             return redirect('appointment')  # Redirect back to the appointment page
-
-#         # Create a new Appointment instance with the provided data
-#         appointment_details = Appointment.objects.create(
-#             appointment_number=appointment_number,
-#             fullname=full_name,
-#             email=email,
-#             mobile_number=mobile_number,
-#             date_of_appointment=date_of_appointment,
-#             time_of_appointment=time_of_appointment,
-#             doctor_id=doc_instance,
-#             worry_id=worry_instance,
-#             additional_msg=additional_msg
-#         )
-#         try:
-
-#             if User.objects.filter(email=email).exists() and User.objects.filter(mobile_number=mobile_number).exists():
-#                 messages.success(request, f'Account exist on Membership Plan . Kindly Login to your Account of email  {email}')
-#                 context = {'doctorview': doctorview, 'appointment_details': appointment_details,
-#                            'page': page}
-#                 return render(request, 'accounts/includes/appointment_success.html', context)
-#         except ValueError:
-#             messages.error(request, "Account not found")
-#             return redirect('register')  # Redirect back to the appointment page
-#         messages.success(request, "Your Appointment Request Has Been Sent. We Will Contact You Soon")
-#         appointment_details.save()
-#         return redirect('register')  # Redirect back to the appointment page
-#     context = {'doctorview': doctorview, 'worry': worry,
-#                'page': page}
-#     return render(request, 'user_profile/includes/appointment_form.html', context)
 
 
 @login_required(login_url='/accounts/login')
@@ -255,7 +190,7 @@ def create_appointment(request):
         except Exception as e:
             messages.error(request, f"Failed to send notifications: {str(e)}")
 
-        return redirect('appointment_success')  # Redirect to a success page
+        return render(request,'accounts/includes/appointment_success.html', {'appointment_details': appointment_details})  # Redirect to a success page
 
     context = {'doctorview': doctorview, 'worry': worry, 'page': page}
     return render(request, 'user_profile/includes/appointment_form.html', context)
@@ -271,6 +206,22 @@ def send_sms(phone_number, message):
     except Exception as e:
         raise Exception(f"SMS sending failed: {str(e)}")
 
-
-def appointment_success(request):
-    return render(request, 'accounts/includes/appointment_success.html',)
+def appointment_success(request, appointment_number):
+    appointment = get_object_or_404(Appointment, appointment_number=appointment_number)
+    doctor_id = appointment.doctor_id
+    page = Page.objects.all()
+    email = appointment.email
+    mobile_number = appointment.mobile_number
+    appointment_details = Appointment.objects.filter(appointment_number=appointment_number)
+    try:
+        if User.objects.filter(email=email).exists() and User.objects.filter(mobile_number=mobile_number).exists():
+            messages.success(request, f'Account exist on Membership Plan . Kindly Login to your Account of email  {email}')
+            context = {'doctorview': doctor_id, 'appointment_details': appointment_details, 'page': page}
+            return render(request, 'accounts/includes/appointment_success.html', context)
+    except ValueError:
+        messages.error(request, "Account not found")
+        return redirect('register')  # Redirect back to the appointment page
+    messages.error(request, f"An error occurred: {str(e)}")
+    context = {'appointment': appointment}  # Add more context data as needed 
+      
+    return render(request, 'accounts/includes/appointment_success.html', context)

@@ -26,12 +26,23 @@
           </li>
         </ul>
       </nav>
-        {% if not request.user.is_authenticated and not request.user.is_superuser %}
-        <a href="{% url 'user_profile_update' %}" class="btn btn-secondary">{{user.username}}</a>
-        
-                  {% else %}
-                  <a href="{% url 'doctor_home' %}" class="btn btn-secondary">{{user.first_name}}</a>
-                  {% endif %}
+  {% if request.user.is_authenticated %}
+  {% if request.user.is_superuser %}
+      <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">
+          {{ request.user.first_name|default:request.user.username }}
+      </a>
+  {% elif request.user.is_staff %}
+      <a href="{% url 'doctor_home' %}" class="btn btn-secondary">
+          {{ request.user.first_name|default:request.user.username }}
+      </a>
+  {% else %}
+      <a href="{% url 'user_profile_update' %}" class="btn btn-secondary">
+          {{ request.user.first_name|default:request.user.username }}
+      </a>
+  {% endif %}
+{% else %}
+  <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
+{% endif %}
 
       <button class="nav-toggle-btn" aria-label="Toggle menu" data-nav-toggler>
         <ion-icon name="menu-outline" aria-hidden="true" class="menu-icon"></ion-icon>

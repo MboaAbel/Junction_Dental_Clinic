@@ -222,16 +222,26 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'error_file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'errors.log'),
         },
+        'sms_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'sms.log'),
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['error_file'],
             'level': 'ERROR',
+            'propagate': True,
+        },
+        'Appointment.utils': {
+            'handlers': ['sms_file'],
+            'level': 'INFO',
             'propagate': True,
         },
     },

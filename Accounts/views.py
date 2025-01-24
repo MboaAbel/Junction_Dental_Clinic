@@ -74,21 +74,51 @@ def user_profile_view(request):
     return render(request, 'user_profile/includes/user_profile.html', context)
 
 
+# def user_profile(request):
+#     user_view = request.user
+#     page = Page.objects.all()
+#     Services = Specialization.objects.all()
+#     context = {'services': Services, 'page': page}
+#     Appointment_History = Appointment.objects.filter(email__icontains=user_view) | Appointment.objects.filter(
+#         mobile_number__icontains=user_view)
+#     if Appointment_History:
+#         # Filter records where fullname or Appointment Number contains the query
+#         Appointee = Appointment_History
+#         messages.info(request, 'Your Appointment History Exists')
+#         context = {'Appointee': Appointee, 'user_view': user_view, 'page': page, 'services': Services, }
+#         return render(request, 'dashboard/includes/profile.html', context)
+#     return render(request, 'user_profile/includes/profile.html', context)
+
+
+from django.db.models import Q
+
 def user_profile(request):
     user_view = request.user
     page = Page.objects.all()
-    Services = Specialization.objects.all()
-    context = {'services': Services, 'page': page}
-    Appointment_History = Appointment.objects.filter(email__icontains=user_view) | Appointment.objects.filter(
-        mobile_number__icontains=user_view)
-    if Appointment_History:
-        # Filter records where fullname or Appointment Number contains the query
-        Appointee = Appointment_History
-        messages.info(request, 'Your Appointment History Exists')
-        context = {'Appointee': Appointee, 'user_view': user_view, 'page': page, 'services': Services, }
+    services = Specialization.objects.all()
+    
+    # Get appointments based on user type
+    if user_view.is_staff:
+        appointments = Appointment.objects.all()
+    else:
+        appointments = Appointment.objects.filter(
+            Q(email=user_view.email) | 
+            Q(mobile_number=user_view.mobile_number)
+        ).order_by('-created_at')
+    
+    context = {
+        'user_view': user_view,
+        'page': page,
+        'services': services,
+        'appointments': appointments,
+    }
+    
+    if appointments.exists():
+        messages.info(request, 'Your Appointment History')
         return render(request, 'dashboard/includes/profile.html', context)
-    return render(request, 'user_profile/includes/profile.html', context)
-
+    else:
+        messages.info(request, 'No Appointment History Found')
+        return render(request, 'user_profile/includes/profile.html', context)
 
 @login_required(login_url='/accounts/login')
 def profile_Update_shit(request):

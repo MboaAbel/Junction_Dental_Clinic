@@ -5,43 +5,50 @@
  <link href="{% static 'user_profile/css/style.css' %}" rel="stylesheet">
 
 
-<div class="container-xxl py-10">
-    <div class="container">
-    <div class="row">
-        {% include 'clinic/includes/messages.html' %}
-
-
-        <h5 class="mt-4">Appointments</h5>
-        <ul class="list-group">
-            {% for i in Appointment %}
-                <li class="list-group-item">Appointment Number: {{ i.appointment_number }}</li>
-            {% endfor %}
-        </ul>
-        <div class="container mt-4">
-          <div class="row justify-content-center">
-              <div class="col-12 col-md-8 col-lg-6">
-                  <div class="card">
-                      <div class="card-body text-center">
-                          <img src="{{user.profile_photo.url}}" alt="{{user.first_name}}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
-                          <h3 class="card-title">{{ user.first_name }} {{ user.last_name }}</h3>
-                          <p class="card-text">{{ user.email }}</p>
+ <div class="container-xxl py-5">
+  <div class="container">
+      {% include 'clinic/includes/messages.html' %}
       
-                          <ul class="list-group list-group-flush">
-                              <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
-                              <li class="list-group-item"><strong>Gender:</strong> {{ user.gender }}</li>
-                              <li class="list-group-item"><strong>Member Status:</strong> {{ user.is_Member_Patient }}</li>
-                              <li class="list-group-item"><strong>Mobile Number:</strong> {{ user.mobile_number }}</li>
-                              <li class="list-group-item"><strong>Patient Type:</strong> {{ user.patient_type }}</li>
-                              <li class="list-group-item"><strong>Date Joined:</strong> {{ user.date_joined }}</li>
-                              <li class="list-group-item"><strong>Member Code:</strong> {{ user.member_code }}</li>
-                          </ul>
-      
-                         
-                      </div>
+      <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+          <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Your Appointments</h5>
+      </div>
+
+      <div class="row g-4">
+          {% for i in Appointment %}
+          <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+              <div class="service-item bg-light rounded h-100 p-4">
+                  <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle mb-4" style="width: 65px; height: 65px;">
+                      <i class="fa fa-calendar-check text-primary fs-4"></i>
+                  </div>
+                  <h4 class="mb-3">Appointment #{{ i.appointment_number }}</h4>
+                  <p class="mb-2"><i class="fa fa-user text-primary me-2"></i>Dr. {{ i.doctor }}</p>
+                  <p class="mb-2"><i class="fa fa-clock text-primary me-2"></i>{{ i.appointment_date|date:"F d, Y" }}</p>
+                  <p class="mb-2"><i class="fa fa-stethoscope text-primary me-2"></i>{{ i.concern }}</p>
+                  {% if i.status == 'Pending' %}
+                      <span class="badge bg-warning text-dark">Pending</span>
+                  {% elif i.status == 'Confirmed' %}
+                      <span class="badge bg-success">Confirmed</span>
+                  {% elif i.status == 'Cancelled' %}
+                      <span class="badge bg-danger">Cancelled</span>
+                  {% endif %}
+                  <div class="mt-3">
+                      <a class="btn btn-sm btn-primary" href="#">View Details</a>
                   </div>
               </div>
           </div>
+          {% empty %}
+          <div class="col-12 text-center">
+              <div class="p-5 bg-light rounded">
+                  <i class="fa fa-calendar-times text-primary fa-3x mb-3"></i>
+                  <h5>No Appointments Found</h5>
+                  <p class="text-muted">You haven't made any appointments yet.</p>
+                  <a href="{% url 'appointment' %}" class="btn btn-primary">Book Now</a>
+              </div>
+          </div>
+          {% endfor %}
       </div>
+  </div>
+</div>
                
         <section class="newsletter" aria-label="newsletter">
             <div class="container">
