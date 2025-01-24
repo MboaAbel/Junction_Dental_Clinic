@@ -28,7 +28,7 @@
       </nav>
   {% if request.user.is_authenticated %}
   {% if request.user.is_superuser %}
-      <a href="{% url 'dashboard:home' %}" class="btn btn-secondary">
+      <a href="{% url 'doctor_home' %}" class="btn btn-secondary">
           {{ request.user.first_name|default:request.user.username }}
       </a>
   {% elif request.user.is_staff %}

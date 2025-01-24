@@ -5,6 +5,8 @@ from Accounts.models import User
 
 
 class Booking(models.Model):
+
+    appointment_ok = models.ForeignKey
     doctor = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

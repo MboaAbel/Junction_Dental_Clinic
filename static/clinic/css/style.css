@@ -713,6 +713,28 @@ body {
 
 .footer .social-link:is(:hover, :focus) { background-image: var(--gradient); }
 
+.footer-location {
+    background-color: var(--oxford-blue-2);
+    padding-block: 40px;
+}
+
+.map-container {
+    margin-top: 20px;
+    box-shadow: var(--shadow-2);
+}
+
+@media (min-width: 768px) {
+    .map-container {
+        margin-inline: auto;
+        max-width: 90%;
+    }
+}
+
+@media (min-width: 992px) {
+    .map-container {
+        max-width: 80%;
+    }
+}
 
 
 
