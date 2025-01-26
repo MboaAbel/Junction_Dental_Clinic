@@ -2,11 +2,17 @@ from django.db import models
 from django.conf import settings
 from ckeditor.fields import RichTextField
 from Accounts.models import User
+from Appointment.models import Appointment
 
 
 class Booking(models.Model):
 
-    appointment_ok = models.ForeignKey
+    appointment_ok = models.ForeignKey(
+        Appointment,
+        on_delete=models.CASCADE,
+        related_name="booking",
+        limit_choices_to={"status": "confirmed"},
+    )
     doctor = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

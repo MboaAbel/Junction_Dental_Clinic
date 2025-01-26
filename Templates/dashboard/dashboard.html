@@ -1,17 +1,16 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
+ 
 
 {% block content %}
-
-<<<<<<< HEAD
-=======
-{% include 'accounts/includes/navigation-fullscreen.html' %} 
-
->>>>>>> 9889168d7d8608f25620153a6c215d87d7fdb45e
 {% block overlay %}
-  <div class="min-height-300 bg-primary position-absolute w-100"></div>
+
+  <div class="min-height-300 bg-gradient-primary position-absolute w-100">
+    {% include 'accounts/includes/navigation-fullscreen.html' %}
+
+  </div>
 {% endblock overlay %}
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 mt-6">
   <div class="row">
     <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
       <div class="card">

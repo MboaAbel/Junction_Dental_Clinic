@@ -8,6 +8,7 @@ from django.db.models import Q
 from .constants import PATIENT_TYPE_CHOICES, SPECIALIZATION_CHOICES, GENDER_CHOICES
 import string
 import random
+from django.urls import reverse
 
 
 def generate_service_id():
@@ -18,18 +19,20 @@ def generate_service_id():
 
 
 class User(AbstractUser):
+    class RoleChoices(models.TextChoices):
+        DOCTOR = "doctor", "Doctor"
+        PATIENT = "patient", "Patient"
+
+    
+    
+    role = models.CharField(choices=RoleChoices.choices,max_length=20,default="patient",error_messages={"required": "Role must be provided"},)
     username = models.CharField(unique=True, null=False, max_length=50, blank=False)
     email = models.EmailField(unique=True, null=False, blank=False)
-    is_Member_Patient = models.BooleanField(default=False)
-    has_next_of_kin = models.BooleanField(default=False)
     next_of_kin = models.ForeignKey('NextOfKin', on_delete=models.CASCADE, blank=True, null=True)
-    is_Doctor = models.BooleanField(default=False)
     specialization = models.CharField(max_length=19, blank=True, choices=SPECIALIZATION_CHOICES,)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=False, default='icon/bondijunction_dentalclinic_logo-300x258.jpg', blank=False)
-    patient_type = models.CharField(max_length=50, null=True, choices=PATIENT_TYPE_CHOICES)
     patient_id = models.CharField(max_length=15, unique=True, blank=True, null=True)
     member_code = models.CharField(default=generate_service_id, max_length=6, unique=True)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="")
     # mobile_number = PhoneNumberField(max_length=13, blank=True, null=True, unique=True)
     mobile_number = models.CharField(max_length=13, blank=True, null=True, unique=True)
     registered = models.BooleanField(default=False)
@@ -50,7 +53,7 @@ class User(AbstractUser):
         if self.has_next_of_kin:
             try:
                 next_of_kin = NextOfKin.objects.get(related_patient=self)
-                return f"{next_of_kin.kin_fname} {next_of_kin.kin_lname}"
+                return f"{next_of_kin.kin_first_name} {next_of_kin.kin_last_name}"
             except NextOfKin.DoesNotExist:
                 return "None"
         else:
@@ -63,6 +66,20 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        full_name = "%s %s" % (self.first_name, self.last_name)
+        return full_name.strip() or self.username
+
+    def get_doctor_profile(self):
+        """
+        Return doctor profile URL
+        """
+        return reverse(
+            "doctors:doctor-profile", kwargs={"username": self.username}
+        )
 
 
 # Create a model for Next of Kin(for a Patient)
@@ -135,18 +152,9 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="profile"
     )
-    avatar = models.ImageField(
-        default="defaults/user.png", upload_to=profile_photo_directory_path
-    )
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
+    registration_number = models.IntegerField(null=True, blank=True)
     about = models.TextField(blank=True, null=True)
-    specialization = models.CharField(max_length=255, blank=True, null=True)
-    gender = models.CharField(
-        max_length=10,
-        choices=[("male", "Male"), ("female", "Female"), ("other", "Other")],
-        blank=True,
-    )
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="")
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
@@ -176,11 +184,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return "Profile of {}".format(self.user.username)
-
-    @property
-    def image(self):
-        return (
-            self.avatar.url
-            if self.avatar.storage.exists(self.avatar.name)
-            else "{}defaults/user.png".format(settings.MEDIA_URL)
-        )

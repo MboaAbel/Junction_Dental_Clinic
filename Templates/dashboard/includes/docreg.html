@@ -2,10 +2,12 @@
     {% load static %}
 {% block content %}
 
-{% block overlay %}
-  <div class="min-height-300 bg-primary position-absolute w-100"></div>
-{% endblock overlay %}
-
+ {% block overlay %}
+<div class="min-height-300 bg-primary position-absolute w-100">
+   {% include 'accounts/includes/navigation-fullscreen.html' %}
+ 
+ </div>
+ {% endblock overlay %}
 
   <div class="container-xxl py-1">
     <div class="container">

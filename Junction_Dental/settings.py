@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Appointment',
     'Dashboard',
     'doctors',
+    'patients',
     'bookings',
     'allauth',
     'allauth.account',

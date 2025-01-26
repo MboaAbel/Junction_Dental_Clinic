@@ -105,7 +105,9 @@ def AppointmentHistoryList(request, id):
 
 
 def create_appointment(request):
-    doctorview = DoctorReg.objects.all()
+    doctorview = (User.objects.select_related("profile")
+        .filter(role="doctor")
+        .filter(is_superuser=True))
     worry = Specialization.objects.all()
     page = Page.objects.all()
 

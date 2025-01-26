@@ -1,6 +1,7 @@
 /*-----------------------------------*\
   #CUSTOM PROPERTY
 \*-----------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&display=swap');
 
 :root {
 
@@ -35,10 +36,10 @@
   /**
    * typography
    */
+   
+  --ff-spartan: 'League Spartan', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* ...existing code... */
 
-  --ff-roboto: "Roboto", sans-serif;
-  --ff-poppins: "Poppins", sans-serif;
-  --ff-open-sans: 'Open Sans', sans-serif;
 
   --fs-1: 4rem;
   --fs-2: 3.6rem;
@@ -133,7 +134,7 @@ ion-icon { pointer-events: none; }
 address { font-style: normal; }
 
 html {
-  font-family: var(--ff-roboto);
+  font-family: var(--ff-spartan);
   font-size: 10px;
   scroll-behavior: smooth;
 }
@@ -142,7 +143,7 @@ body {
   background-color: var(--white);
   color: var(--sonic-silver);
   font-size: 1.5rem;
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
 }
 
 
@@ -159,7 +160,7 @@ body {
 
 .section-subtitle {
   color: var(--royal-blue-light);
-  font-family: var(--ff-poppins);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-6);
   font-weight: var(--fw-700);
   text-transform: uppercase;
@@ -169,7 +170,7 @@ body {
 .h1,
 .h2,
 .h3 {
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
   line-height: 1.2;
 }
 
@@ -263,7 +264,7 @@ body {
 
 .logo {
   color: var(--oxford-blue-1);
-  font-family: var(--ff-poppins);
+  font-family: var(--ff-spartan);
   font-size: 3.4rem;
   font-weight: var(--fw-800);
 }
@@ -330,14 +331,14 @@ body {
 .hero-content { margin-block-end: 50px; }
 
 .hero-title {
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-1);
   font-weight: var(--fw-700);
   margin-block: 15px 30px;
 }
 
 .hero-text {
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-4);
   line-height: 1.5;
   margin-block-end: 40px;
@@ -360,13 +361,13 @@ body {
   padding-inline: 15px;
   border-radius: var(--radius-4);
   margin-block-end: 15px;
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-5);
 }
 
 .hero-form .btn {
   width: 100%;
-  font-family: var(--ff-open-sans);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-6);
   font-weight: var(--fw-600);
 }
@@ -655,7 +656,7 @@ body {
 
 .footer-list-title {
   color: var(--white);
-  font-family: var(--ff-poppins);
+  font-family: var(--ff-spartan);
   font-size: var(--fs-4);
   font-weight: var(--fw-700);
   margin-block-end: 10px;
@@ -734,6 +735,25 @@ body {
     .map-container {
         max-width: 80%;
     }
+}
+
+.map-section {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: 450px;
+  overflow: hidden;
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 
@@ -1072,7 +1092,7 @@ body {
 
   .navbar-link {
     color: var(--oxford-blue-1);
-    font-family: var(--ff-poppins);
+    font-family: var(--ff-spartan);
     text-transform: capitalize;
     transition: var(--transition);
   }

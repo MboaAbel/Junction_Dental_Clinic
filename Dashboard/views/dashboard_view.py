@@ -126,7 +126,7 @@ def create_appointment(request):
 
 
 @login_required(login_url='/accounts/login')
-def Dashboard(request):
+def Dashboard_view(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
     all_apt_count = Appointment.objects.filter(doctor_id=doctor_reg).count

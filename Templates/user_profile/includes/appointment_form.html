@@ -35,9 +35,9 @@
                             <div class="col-12 col-sm-6">
                                 <label for="doctor">Choose Doctor</label>
                                 <select class="form-select border-1" style="color:#001100;height: 55px;" name="doctor_id" required="true">
-                                    <option selected  disabled value="">Choose Clinic</option>
+                                    <option selected  disabled value="">Junction Dental</option>
                                     {% for doctor in doctorview %}
-        <option style="color:#001100;" value="{{ doctor.id }}">{{ doctor.member.first_name }} {{ doctor.member.last_name }}</option>
+        <option style="color:#25d366;" value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
     {% endfor %}
 
                                 </select>

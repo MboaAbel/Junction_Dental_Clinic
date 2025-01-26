@@ -3,12 +3,18 @@
 
 {% block title %} Home {% endblock title %}
 
-{% block overlay %}
-  <div class="min-height-300 bg-primary position-absolute w-100"></div>
-{% endblock overlay %}
+
 
 {% block content %}
-  <div class="container-fluid py-4">
+{% block overlay %}
+  <div class="min-height-300 bg-primary position-absolute w-100">
+    {% include 'accounts/includes/navigation-fullscreen.html' %}
+
+  </div>
+{% endblock overlay %}
+
+<!-- Appointment Start -->
+<div class="container-xxl py-8 mt-6">
     <div class="row">
       <div class="col-12">
         <div class="card mb-4">

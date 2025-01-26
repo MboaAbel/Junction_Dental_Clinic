@@ -100,10 +100,8 @@ class UserProfileUpdateForm(forms.ModelForm):
             'first_name',
             'last_name',
             'mobile_number',
-            'gender',
             'member_code',
             'patient_id',
-            'patient_type',
             'next_of_kin',
             'profile_photo',
 

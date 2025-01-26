@@ -1,47 +1,190 @@
-
-
-
-
-
-@import url('https://fonts.googleapis.com/css?family=Tangerine');
-#header{
-  color: #6BBE4E !important;
-  font-family:Comic Sans Mn;
-  box-shadow: 40px 40px 40px 80px rgba(0,0,0,0.3);
+/* Root variables */
+:root {
+  --primary: #5e72e4;
+  --secondary: #8392ab;
+  --success: #2dce89;
+  --info: #11cdef;
+  --warning: #fb6340;
+  --danger: #f5365c;
+  --light: #e9ecef;
+  --dark: #344767;
+  --white: #fff;
 }
 
-#header a:link, #header a:visited{
-  color: #6BBE4E; !important;
-   font-family:Comic Sans Mn;
+/* Admin base styling */
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: #f8f9fa;
+  color: #67748e;
+  margin: 0;
+  line-height: 1.5;
 }
 
-div.breadcrumbs{
-  background-color: #6BBE4E;
-  padding:4px;
+/* Header styling */
+#header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 1rem;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
 }
 
-.module h2, .module caption, .inline-group h2{
-  background-color: #001100;
-   font-family:Comic Sans Mn;
+#branding h1 {
+  color: var(--white);
+  font-weight: 600;
 }
 
-.button, input[type=submit], input[type=button], .submit-row input, a.button{
-  background-color: #6BBE4E;
-
+/* Content area */
+#content {
+  padding: 2rem;
+  background: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  margin: 2rem;
 }
 
-.button:active, input[type=submit]:active, input[type=button]:active, .button:focus, input[type=submit]:focus, input[type=button]:focus, .button:hover, input[type=submit]:hover, input[type=button]:hover{
-  background-color: #6BBE4E;
+/* Module headers */
+.module h2, 
+.module caption {
+  background: var(--dark);
+  color: var(--white);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.button.default, input[type=submit].default, .submit-row input.default{
-  background-color: #6BBE4E;
+/* Links */
+a:link, a:visited {
+  color: var(--primary);
+  text-decoration: none;
 }
 
-.button.default:active, input[type=submit].default:active, .button.default:focus, input[type=submit].default:focus, .button.default:hover, input[type=submit].default:hover{
-  background-color: #6BBE4E;
+a:hover {
+  color: var(--info);
 }
 
-a:link, a:visited{
-  color: #001100;
+/* Buttons */
+.button, 
+input[type=submit], 
+input[type=button] {
+  background: var(--primary);
+  color: var(--white);
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover {
+  background: #233dd2;
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Form styling */
+.form-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--light);
+}
+
+.form-row label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+/* Inputs */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea,
+select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d2d6da;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  outline: 0;
+  box-shadow: 0 3px 9px rgba(50, 50, 9, 0), 3px 4px 8px rgba(94, 114, 228, 0.1);
+}
+
+/* Messages */
+.success {
+  background: #d5f5e7;
+  color: #125237;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.error {
+  background: #fdd7de;
+  color: #932037;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--light);
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--light);
+}
+
+tr:hover {
+  background: rgba(94, 114, 228, 0.1);
+}
+
+/* Dashboard styling */
+.dashboard .module table th {
+  width: 100%;
+}
+
+.dashboard .module table td {
+  white-space: nowrap;
+}
+
+/* Action buttons */
+.addlink,
+.changelink,
+.deletelink {
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  #content {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-row {
+    padding: 0.5rem 0;
+  }
 }

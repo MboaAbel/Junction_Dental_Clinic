@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from Clinic.models import Specialization
 from Appointment.models import Appointment
-
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from utils.htmx import render_toast_message_for_api
 
 # Create your views here.
 
@@ -74,22 +75,6 @@ def user_profile_view(request):
     return render(request, 'user_profile/includes/user_profile.html', context)
 
 
-# def user_profile(request):
-#     user_view = request.user
-#     page = Page.objects.all()
-#     Services = Specialization.objects.all()
-#     context = {'services': Services, 'page': page}
-#     Appointment_History = Appointment.objects.filter(email__icontains=user_view) | Appointment.objects.filter(
-#         mobile_number__icontains=user_view)
-#     if Appointment_History:
-#         # Filter records where fullname or Appointment Number contains the query
-#         Appointee = Appointment_History
-#         messages.info(request, 'Your Appointment History Exists')
-#         context = {'Appointee': Appointee, 'user_view': user_view, 'page': page, 'services': Services, }
-#         return render(request, 'dashboard/includes/profile.html', context)
-#     return render(request, 'user_profile/includes/profile.html', context)
-
-
 from django.db.models import Q
 
 def user_profile(request):
@@ -119,36 +104,6 @@ def user_profile(request):
     else:
         messages.info(request, 'No Appointment History Found')
         return render(request, 'user_profile/includes/profile.html', context)
-
-@login_required(login_url='/accounts/login')
-def profile_Update_shit(request):
-    form = UserProfileUpdateForm()
-    member = User.objects.get(email=request.user)
-    if request.method == 'POST':
-        if request.FILES.get('image') is not None:
-            profile_photo = member.profile_photo
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
-            phone_number = request.POST.get('phone_number')
-            username = request.POST.get('username')
-            try:
-                if request.FILES.get('image') is None:
-                    profile_photo = request.FILES.get('profile_picture')
-
-                member.profile_photo = profile_photo
-                member.phone_number = phone_number
-                member.first_name = first_name
-                member.username = username
-                member.email = email
-                member.last_name = last_name
-                member.save()
-                context = {'member': member}
-
-            except:
-                messages.error(request, "Your profile updation has been failed")
-                return render(request, 'user_profile/includes/user_profile_update.html')
-        return render(request, 'user_profile/includes/user_profile_update.html', context)
 
 
 @login_required(login_url='/accounts/login')
@@ -193,3 +148,39 @@ def profile_Update(request):
         return render(request, 'user_profile/includes/profile.html')
 
     return render(request, 'user_profile/includes/user_profile_update.html', {'form': form})
+
+
+@login_required(login_url='/accounts/login')
+class UpdateBasicUserInformationAPIView(LoginRequiredMixin, UserPassesTestMixin):
+
+
+    def get_object(self):
+        return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            data = request.POST
+            files = request.FILES
+
+            # Update user information
+            user.first_name = data.get("first_name", user.first_name)
+            user.last_name = data.get("last_name", user.last_name)
+            user.save()
+
+            # Update profile information
+            user_profile = user.profile
+            user_profile.registration_number = data.get("registration_number")
+            user_profile.gender = data.get("gender")
+
+            # Handle avatar file upload
+            if "avatar" in files:
+                user.profile_photo = files["profile_photo"]
+
+            user_profile.save()
+
+            return render_toast_message_for_api(
+                "Information", "Updated successfully", "success"
+            )
+        except Exception as e:
+            return render_toast_message_for_api("Error", str(e), "error")
