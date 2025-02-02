@@ -1,0 +1,76 @@
+<section class="section property" aria-label="property">
+    <div class="container">
+
+      <h2 class="h2 section-title">Services Offered</h2>
+
+      <p class="section-text">
+        affordable pocket friendly smile restore services
+     </p>
+
+      <ul class="property-list">
+     {% for i in services %}
+        <li>
+
+
+          <div class="property-card">
+
+            <figure class="card-banner img-holder" style="--width: 800; --height: 533;">
+              <img src="{{i.service_image.url}}" width="800" height="533" loading="lazy"
+                alt="{{i.service_image}} " class="img-cover">
+            </figure>
+
+            <button class="card-action-btn" aria-label="add to favourite">
+              <ion-icon name="heart" aria-hidden="true"> </ion-icon>
+            </button>
+
+            <div class="card-content">
+
+              <h3 class="h3">
+                <a href="#" class="card-title"> {{i.sname}}</a>
+              </h3>
+
+              <ul class="card-list">
+
+                <li class="card-item">
+                  <div class="item-icon">
+                    <ion-icon name="start-outline"></ion-icon>
+                  </div>
+<div>
+       <span class="meta-title">{{ i.service_code }}:</span>
+                  <span class="meta-title">
+                    <span>{{i.service_title}}</span>
+                  </span>
+                </div>
+              </li>
+
+                <li class="card-item">
+                </li>
+
+                <li class="card-item">
+                </li>
+
+              </ul>
+
+              <div class="card-meta">
+
+                <div>
+                  <span class="meta-title">Price</span>
+
+                  <span class="meta-text">Ksh.{{i.service_price}}</span>
+                </div>
+
+
+<a href="#" class="btn btn-secondary">+ Book Now</a>
+
+              </div>
+
+            </div>
+
+          </div>
+        </li>
+{% endfor %}
+
+      </ul>
+
+    </div>
+  </section>

@@ -3,23 +3,17 @@ from django.db.models import Count, Sum, Avg
 from Accounts.decorators import AdminRequiredMixin
 from django.views.generic import ListView
 from datetime import date
-from django.contrib import messages
-from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.db.models.functions import TruncMonth, TruncDay
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 from datetime import timedelta
-from django.core.serializers.json import DjangoJSONEncoder
 import json
-from decimal import Decimal
-from Clinic.models import Specialization
 from Accounts.models import User
-from bookings.models import Booking, Prescription
+from bookings.models import Booking
 
 
 class AdminDashboardView(AdminRequiredMixin, TemplateView):
-    template_name = "dashboard/index.html"
+    template_name = "admin/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,14 +73,6 @@ class AdminDashboardView(AdminRequiredMixin, TemplateView):
         ).order_by("-created_at")[:10]
 
         return context
-
-
-class AdminPatientsView(AdminRequiredMixin, ListView):
-    model = User
-    template_name = "user_profile/includes/user_profile.html"
-    context_object_name = "patients"
-    paginate_by = 10
-
     def get_queryset(self):
         queryset = User.objects.filter(role="patient").select_related("profile")
 
@@ -132,68 +118,6 @@ class AdminPatientsView(AdminRequiredMixin, ListView):
 
         return queryset
 
-
-class AdminDoctorsView(AdminRequiredMixin, ListView):
-    model = User
-    template_name = "dashboard/doctors.html"
-    context_object_name = "doctors"
-    paginate_by = 10
-
-    def get_queryset(self):
-        return User.objects.filter(role="doctor")
-
-
-class AdminAppointmentsView(AdminRequiredMixin, ListView):
-    model = Booking
-    template_name = "dashboard/appointments.html"
-    context_object_name = "appointments"
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Booking.objects.select_related(
-            "doctor", "doctor__profile", "patient", "patient__profile"
-        ).order_by("-appointment_date", "-appointment_time")
-
-
-class AdminSpecialitiesView(AdminRequiredMixin, ListView):
-    
-    template_name = "dashboard/specialities.html"
-    context_object_name = "specialities"
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Specialization.objects.all().order_by("name")
-
-
-class SpecialityCreateView(AdminRequiredMixin, CreateView):
-    model = Specialization
-    fields = ["name", "description", "image"]
-    template_name = "dashboard/specialities.html"
-    success_url = reverse_lazy("admin-specialities")
-
-    def form_valid(self, form):
-        messages.success(self.request, "Speciality created successfully.")
-        return super().form_valid(form)
-
-
-class SpecialityUpdateView(AdminRequiredMixin, UpdateView):
-    model = Specialization
-    fields = ["name", "description", "image", "is_active"]
-    template_name = "dashboard/specialities.html"
-    success_url = reverse_lazy("admin-specialities")
-
-    def form_valid(self, form):
-        messages.success(self.request, "Speciality updated successfully.")
-        return super().form_valid(form)
-
-
-class SpecialityDeleteView(AdminRequiredMixin, DeleteView):
-    model = Specialization
-    success_url = reverse_lazy("admin-specialities")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(request, "Speciality deleted successfully.")
-        return super().delete(request, *args, **kwargs)
 
 
 class AdminPrescriptionsView(AdminRequiredMixin, ListView):

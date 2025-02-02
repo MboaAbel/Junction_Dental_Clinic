@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, HttpResponse
-from .models import Specialization, Page
+from .models import Specialization, Page, Blog
 from Dashboard.models import DoctorReg
 from Appointment.models import Appointment
 from datetime import datetime
@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from .utils import send_sms
 from django.shortcuts import render, redirect
 from urllib.parse import urlencode
+from Accounts.models import User
  
 
 def generate_whatsapp_link(request):
@@ -23,7 +24,7 @@ def generate_whatsapp_link(request):
     return render(request, 'template_name.html', {'whatsapp_url': whatsapp_url})
 
 
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def doctor_home(request):
     doctor_count = DoctorReg.objects.all().count
     context = {
@@ -31,8 +32,7 @@ def doctor_home(request):
     }
     return render(request, 'dashboard/dashboard.html', context)
 
-
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def Specialization(request):
     if request.method == "POST":
         specializationname = request.POST.get('specializationname')
@@ -44,8 +44,7 @@ def Specialization(request):
         return redirect("add_specilizations")
     return render(request, 'admin/specialization.html')
 
-
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def Manage_Specialization(request):
     specialization = Specialization.objects.all()
     context = {'specialization': specialization,
@@ -62,7 +61,7 @@ def Delete_Specialization(request, id):
     return redirect('manage_specilizations')
 
 
-login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 
 
 def Update_Specialization(request, id):
@@ -75,7 +74,7 @@ def Update_Specialization(request, id):
     return render(request, 'admin/update_specialization.html', context)
 
 
-login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 
 
 def Update_Specialization_Details(request):
@@ -90,7 +89,7 @@ def Update_Specialization_Details(request):
     return render(request, 'admin/update_specialization.html')
 
 
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def DoctorList(request):
     doctorlist = DoctorReg.objects.all()
     context = {'doctorlist': doctorlist,
@@ -162,7 +161,7 @@ def Doctor_Between_Date_Report(request):
                   {'doctor': doctor, 'start_date': start_date, 'end_date': end_date})
 
 
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def Website_Update(request):
     page = Page.objects.all()
     context = {"page": page,
@@ -171,7 +170,7 @@ def Website_Update(request):
     return render(request, 'admin/website.html', context)
 
 
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def Update_Website_Details(request):
     if request.method == 'POST':
         web_id = request.POST.get('web_id')
@@ -193,7 +192,9 @@ def Update_Website_Details(request):
 
 
 def HeroView(request):
-    return render(request, "clinic/index.html")
+    doctors = User.objects.filter(role=User.RoleChoices.DOCTOR)
+
+    return render(request, "clinic/index.html", {'doctors':doctors})
 
 
 def sms_reply(request):
@@ -218,3 +219,56 @@ def send_sms_view(request):
     return JsonResponse({"error": "Failed to send message."}, status=500)
 
 
+
+@login_required(login_url='accounts/login')
+def upload(request):
+
+    if request.method == 'POST':
+        soshi_user = request.user.username
+        caption = request.POST['caption']
+        blog_title = request.POST['title']
+        blog_subtitle = request.POST['subtitle']
+        blog_image = request.FILES.get('image_upload')
+        blog_image_1 = request.FILES.get('image_upload')
+
+
+
+        new_post = Blog.objects.create(blog_image=blog_image,blog_title=blog_title,blog_subtitle=blog_subtitle,
+                                       blog_image_1=blog_image_1, caption=caption,soshi_user=soshi_user)
+        new_post.save()
+
+        return redirect('/')
+    else:
+        return render(request, 'admin/website.html')
+
+
+
+    #   feed_list = list(chain(*feed))
+
+    # # user suggestion starts
+    # all_users = User.objects.all()
+    # user_following_all = []
+
+    # for user in user_following:
+    #     user_list = User.objects.get(username=user.user)
+    #     user_following_all.append(user_list)
+    
+    # new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    # current_user = User.objects.filter(username=request.user.username)
+    # final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    # random.shuffle(final_suggestions_list)
+
+    #    username_profile = []
+    # username_profile_list = []
+
+    # for users in final_suggestions_list:
+    #     username_profile.append(users.id)
+
+    # for ids in username_profile:
+    #     profile_lists = Profile.objects.filter(id_user=ids)
+    #     username_profile_list.append(profile_lists)
+
+    # suggestions_username_profile_list = list(chain(*username_profile_list))
+
+
+    # return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4]})

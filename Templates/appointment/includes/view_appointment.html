@@ -15,36 +15,36 @@
     <thead>
     <tr>
    
+    
+    <th class="text-right"></th>
     <th>Appointment No.</th>
     <th>Patient Name</th>
-    <th>Date of Appointment</th>
-    <th>Time of Appointment</th>
     <th>Creation Date</th>
     <th>Status</th>
-    <th class="text-right">Action</th>
+    
     </tr>
     </thead>
     <tbody>
-        {% for i in view_appointment %}
+        {% for i in patient %}
     <tr>
 
-    <td>{{i.appointmentnumber}}</td>
+    
+    <td class="text-right">
+        <div class="actions">
+        <a href="{% url 'patient_appointment_details' i.id i.appointment_number %}">
+        <i class="btn btn-primary btn-block">View</i>
+        </a>
+      
+        </div>
+        </td>
+    <td>JDC-{{i.appointment_number}}</td>
     <td>{{i.fullname}}</td>
-    <td>{{i.date_of_appointment}}</td>
-    <td>{{i.time_of_appointment}}</td>
     <td>{{i.created_at}}</td>
     {% if i.status == '0' %}
                                                 <td>Not Updated Yet</td>
                                                 {% else %}
                                                 <td>{{ i.status}}</td>{% endif %}
-    <td class="text-right">
-    <div class="actions">
-    <a href="{% url 'patientappointmentdetails' i.id %}">
-    <i class="btn btn-primary btn-block">View</i>
-    </a>
-  
-    </div>
-    </td>
+    
     </tr> {% endfor %}
    
     </tbody>
@@ -53,16 +53,16 @@
 <!-- Pagination controls -->
 <div class="pagination" style="padding-top: 20px;padding-bottom: 20px;text-align: center;">
     <span class="step-links">
-        {% if view_appointment.has_previous %}
+        {% if patient.has_previous %}
             <a href="?page=1">&laquo; First</a>
             <a href="?page={{ view_appointment.previous_page_number }}">Previous</a>
         {% endif %}
 
         <span class="current">
-            Page {{ view_appointment.number }} of {{ view_appointment.paginator.num_pages }}.
+            Page {{ patient.number }} of {{ patient.paginator.num_pages }}.
         </span>
 
-        {% if view_appointment.has_next %}
+        {% if patient.has_next %}
             <a href="?page={{ view_appointment.next_page_number }}">Next</a>
             <a href="?page={{ view_appointment.paginator.num_pages }}">Last &raquo;</a>
         {% endif %}

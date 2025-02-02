@@ -5,13 +5,13 @@ urlpatterns = [
 
 
     path('', Dashboard_view, name='doctor_home'),
-    path('mpesa', mpesa, name='mpesa'),
+    path('mpesa', mpesa, name='mpesa'),    
     path('member', member, name='member'),
     path('table', records, name='table'),
     path('DoctorSignup', DoctorSignup, name='Doctor_registration'),
     path('ViewAppointments', View_Appointment, name='view_appointment'),
     path('Create', create_appointment, name='dashboard_create_appointment'),
-    path('PatientAppointmentDetails/<str:id>', Patient_Appointment_Details,name='patientappointmentdetails'),
+    path('PatientAppointmentDetails/<str:id>/<str:appointment_number>', Patient_Appointment_Details,name='patient_appointment_details'),
     path('AppointmentDetailsRemark/Update', Patient_Appointment_Details_Remark, name='patient_appointment_details_remark'),
     path('DoctorPatientApprovedAppointment', Patient_Approved_Appointment, name='patient_approved_appointment'),
     path('DoctorPatientCancelledAppointment', Patient_Cancelled_Appointment, name='patient_cancelled_appointment'),

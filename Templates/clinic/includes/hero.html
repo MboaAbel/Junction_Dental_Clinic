@@ -3,14 +3,19 @@
 <section class="section hero" id="home" style="background-image: url('{% static 'clinic/images/hero-bg.png' %}')" aria-label="hero">
     <div class="container">
         <div class="hero-content">
-            <p class="section-subtitle">Welcome</p>
+            <p class="section-subtitle">Welcome;</p>
             <h1 class="h1 hero-title">Your smile is our priority</h1>
-            <p class="hero-text">Experience the best dental care with our expert team.</p>
+            <p class="hero-text"> Dental care experience,Restore The Smile</p>
+            <div style="display:flex;flex-direction:row; margin-left:5px;">
             <button type="submit" class="btn"><a href="{% url 'appointment' %}">Book Appointment</a></button>
+            <button type="submit" style="margin-left:5px;" class="btn btn-outline-light"><a href="{% url 'register' %}">Join Now</a></button>
         </div>
-        <figure class="hero-banner">
-            <img src="{% static 'clinic/images/hero-banner.png' %}" width="587" height="850" alt="hero banner" class="w-100">
+        </div>
+    
+        <figure class="hero-banner" style="margin-bottom: -6.5vh; ">
+            <img src="{% static 'clinic/images/hero-banner.png' %}" alt="hero banner" style="box-decoration-break: clone;" class="w-100">
         </figure>
+    </div>
     </div>
 </section>
 

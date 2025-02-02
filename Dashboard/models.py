@@ -2,15 +2,15 @@ from django.db import models
 from Accounts.models import User
 from Clinic.models import Specialization
 from django.utils.text import slugify
-
+import uuid
 
 
 # Create your models here.
 class DoctorReg(models.Model):
     member = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
-    clinic_code = models.CharField(max_length=8)
-    clinic_name = models.CharField(max_length=8)
-    mobile_number = models.CharField(max_length=11)
+    clinic_code = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    clinic_name = models.CharField(max_length=120)
+    mobile_number = models.CharField(max_length=15)
     other_specializations_id = models.ManyToManyField(Specialization,)
     reg_date_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

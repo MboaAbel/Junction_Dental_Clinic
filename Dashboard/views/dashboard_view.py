@@ -4,17 +4,20 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, HttpResponse
 from Dashboard.models import DoctorReg
+from bookings.models import Booking
 from Appointment.models import Appointment
 from datetime import datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import random
 from Clinic.models import Page
+from mixins.custom_mixins import DoctorRequiredMixin
 
+from django.views.generic import UpdateView, DetailView, View
 
 # Create your views here.
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def DoctorSignup(request):
     specialization = Specialization.objects.all()
     if request.method == "POST":
@@ -62,10 +65,13 @@ def DoctorSignup(request):
 
     return render(request, 'dashboard/includes/docreg.html', context)
 
-
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def create_appointment(request):
-    doctorview = DoctorReg.objects.all()
+    doctorview = (User.objects
+        .select_related("profile", "doctorreg")
+        .filter(role="doctor")
+        # .filter(is_superuser=True)
+        )
     worry = Specialization.objects.all()
     page = Page.objects.all()
 
@@ -81,7 +87,7 @@ def create_appointment(request):
         additional_msg = request.POST.get('additional_msg')
 
         # Retrieve the DoctorReg instance using the doctor_id
-        doc_instance = DoctorReg.objects.get(id=doctor_id)
+        doc_instance = DoctorReg.objects.get(member=doctor_id)
         worry_instance = Specialization.objects.get(id=worry_id)
 
         # Validate that *date_of_appointment is greater than today's date
@@ -125,9 +131,10 @@ def create_appointment(request):
     return render(request, 'dashboard/includes/appointment.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Dashboard_view(request):
     doctor_admin = request.user
+    patientdetails = Appointment.objects.filter(status='0')
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
     all_apt_count = Appointment.objects.filter(doctor_id=doctor_reg).count
     new_apt_count = Appointment.objects.filter(status='0', doctor_id=doctor_reg).count
@@ -139,13 +146,15 @@ def Dashboard_view(request):
         'all_apt_count': all_apt_count,
         'app_apt_count': app_apt_count,
         'can_apt_count': can_apt_count,
-        'com_apt_count': com_apt_count
+        'appointment': patientdetails,
+        'com_apt_count': com_apt_count,
+        'doctor':doctor_reg,
 
     }
     return render(request, 'dashboard/dashboard.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def View_Appointment(request):
     try:
         doctor_admin = request.user
@@ -171,8 +180,7 @@ def View_Appointment(request):
 
     return render(request, 'dashboard/includes/view_appointment.html', context)
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Search_Appointments(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -189,7 +197,7 @@ def Search_Appointments(request):
             return render(request, 'dashboard/includes/search-appointment.html', {})
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Between_Date_Report(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -214,8 +222,7 @@ def Between_Date_Report(request):
     return render(request, 'dashboard/includes/between-dates-report.html',
                   {'patient': patient, 'start_date': start_date, 'end_date': end_date})
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_Appointment_Prescription(request):
     if request.method == 'POST':
         patient_id = request.POST.get('pat_id')
@@ -230,10 +237,11 @@ def Patient_Appointment_Prescription(request):
         messages.success(request, "Status Update successfully")
         context = {'patientaptdet': patientaptdet}
         return render(request, 'dashboard/includes/patient_list_app_appointment.html', context)
-    return redirect('view_appointment')
+    return render(request, 'dashboard/includes/patient_appointment_details.html', context)
 
 
-@login_required(login_url='/accounts/login')
+
+@login_required(login_url='/Accounts/login')
 def Patient_Appointment_Completed(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -242,25 +250,55 @@ def Patient_Appointment_Completed(request):
     return render(request, 'dashboard/includes/patient_list_app_appointment.html', context)
 
 
-@login_required(login_url='/accounts/login/')
-def Patient_Appointment_Details(request, id):
-    patientdetails = Appointment.objects.filter(id=id)
-    context = {'patientdetails': patientdetails, 'app_word': 'Details'
 
-               }
+
+class AppointmentDetailView(DoctorRequiredMixin, DetailView):
+    model = Booking
+    template_name = "dashboard/includes/patient_appointment_details.html"
+    context_object_name = "appointment"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        patient = self.object.patient
+
+        # Get patient's appointment history with this doctor
+        context["patient_history"] = (
+            Booking.objects.select_related("doctor", "doctor__profile")
+            .filter(
+                doctor=self.request.user,
+                patient=patient,
+                appointment_date__lt=self.object.appointment_date,
+            )
+            .order_by("-appointment_date", "-appointment_time")
+        )
+
+        # Get total visits count
+        context["total_visits"] = Booking.objects.filter(
+            doctor=self.request.user, patient=patient, status="completed"
+        ).count()
+
+        return context
+
+
+
+
+@login_required(login_url='/Accounts/login')
+def Patient_Appointment_Details(request, id, appointment_number):
+    patientdetails = Appointment.objects.filter(id=id,appointment_number=appointment_number)
+    context = {'patientdetails': patientdetails, 'app_word': appointment_number}
 
     return render(request, 'dashboard/includes/patient_appointment_details.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_Appointment_Details_Remark(request):
     if request.method == 'POST':
         patient_id = request.POST.get('pat_id')
         remark = request.POST['remark']
         status = request.POST['status']
-        patientaptdet = Appointment.objects.get(id=patient_id)
+        patientaptdet = Appointment.objects.get(id=patient_id,)
         patientaptdet.remark = remark
-        patientaptdet.status = status
+        patientaptdet.status = status  
         patientaptdet.save()
         messages.success(request, "Status Update successfully")
         context = {'patientaptdet': patientaptdet, 'app_word': 'Patient Details'}
@@ -268,8 +306,7 @@ def Patient_Appointment_Details_Remark(request):
 
     return redirect('view_appointment')
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_Approved_Appointment(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -277,8 +314,7 @@ def Patient_Approved_Appointment(request):
     context = {'patientdetails1': patientdetails1, 'app_word': 'Approved'}
     return render(request, 'dashboard/includes/patient_app_appointment.html', context)
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_Cancelled_Appointment(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -287,7 +323,7 @@ def Patient_Cancelled_Appointment(request):
     return render(request, 'dashboard/includes/patient_app_appointment.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_New_Appointment(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -295,8 +331,7 @@ def Patient_New_Appointment(request):
     context = {'patientdetails1': patientdetails1, 'app_word': 'New'}
     return render(request, 'dashboard/includes/patient_app_appointment.html', context)
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def Patient_List_Approved_Appointment(request):
     doctor_admin = request.user
     doctor_reg = DoctorReg.objects.get(member=doctor_admin)
@@ -305,7 +340,7 @@ def Patient_List_Approved_Appointment(request):
     return render(request, 'dashboard/includes/patient_list_app_appointment.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def DoctorAppointmentList(request, id):
     patientdetails = Appointment.objects.filter(id=id,status='Completed')
     context = {'patientdetails': patientdetails, 'app_word': 'Doctor Approved List '
@@ -314,17 +349,16 @@ def DoctorAppointmentList(request, id):
     return render(request, 'dashboard/includes/doctor_appointment_list_details.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def mpesa(request):
     return render(request, 'dashboard/includes/billing.html')
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def records(request):
     return render(request, 'dashboard/includes/tables.html')
 
 
-
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def member(request):
     return render(request, 'dashboard/includes/profile.html')

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, NextOfKin, OTP
+from .models import User, NextOfKin, OTP, Profile
 # Create a custom user admin class
 admin.site.register(User)
 
@@ -42,7 +42,7 @@ class User(admin.ModelAdmin):
         )
     )
 
-
+admin.site.register(Profile)
 admin.site.register(NextOfKin)
 
 

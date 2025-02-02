@@ -1,7 +1,6 @@
 import json
 from datetime import datetime
 
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import (
     HttpRequest,
@@ -17,8 +16,10 @@ from django.views.generic import (
     DetailView,
     View,
     CreateView,
-    UpdateView, 
 )
+
+from Clinic.models import Page
+from Clinic.models import Specialization
 from django.views.generic.base import TemplateView
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
@@ -28,7 +29,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 
-from bookings.models import Booking, Prescription
+from bookings.models import Booking
 from Dashboard.decorators import user_is_doctor
 from doctors.forms import DoctorProfileForm, PrescriptionForm
 from doctors.models import Experience
@@ -38,7 +39,9 @@ from doctors.serializers import (
     ExperienceSerializer,
     RegistrationNumberSerializer,
     SpecializationSerializer,
+
 )
+from Appointment.models import Appointment
 from mixins.custom_mixins import DoctorRequiredMixin
 from utils.htmx import render_toast_message_for_api
 from Accounts.models import User
@@ -79,13 +82,13 @@ class DoctorDashboardView(DoctorRequiredMixin, TemplateView):
 
         # Get upcoming appointments
         context["upcoming_appointments"] = (
-            Booking.objects.select_related("patient", "patient__profile")
+            Appointment.objects.select_related("patient", "patient__profile")
             .filter(
-                doctor=self.request.user,
-                appointment_date__gte=today,
+                doctor_id=self.request.user,  
+                date_of_appointment__gte=today,
                 status__in=["pending", "confirmed"],
             )
-            .order_by("appointment_date", "appointment_time")[:10]
+            .order_by("date_of_appointment", "time_of_appointment")[:10]
         )
 
         # Get today's appointments
@@ -97,14 +100,15 @@ class DoctorDashboardView(DoctorRequiredMixin, TemplateView):
 
         return context
 
-
+#perfect time format  human
 def convert_to_24_hour_format(time_str):
     if time_str == "00:00 AM":
         time_str = "12:00 AM"
     return datetime.strptime(time_str, "%I:%M %p").time()
 
 
-@login_required
+
+@login_required(login_url='/Accounts/login')
 @user_is_doctor
 def schedule_timings(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
@@ -112,7 +116,7 @@ def schedule_timings(request: HttpRequest) -> HttpResponse:
         for i in range(7):
             if data.get(f"day_{i}", None):
                 start_times = data.getlist(f"start_time_{i}", default=[])
-                end_times = data.getlist(f"end_time_{i}", default=[])
+                end_times = data.getlist(f"end  _time_{i}", default=[])
                 for index in range(len(start_times)):
                     start = convert_to_24_hour_format(start_times[index])
                     end = convert_to_24_hour_format(end_times[index])
@@ -133,6 +137,40 @@ def schedule_timings(request: HttpRequest) -> HttpResponse:
         )
 
     return render(request, "doctors/schedule-timings.html")
+
+
+def user_profile(request):
+    user_view = request.user
+    page = Page.objects.all()
+    services = Specialization.objects.all()
+    doctor = get_object_or_404(
+            User, email=user_view, role=User.RoleChoices.DOCTOR
+        )
+    
+    # Get appointments based on user type
+    if user_view.is_staff:
+        appointments = Appointment.objects.all()
+    else:
+        appointments = Appointment.objects.filter(
+            Q(email=user_view.email) | 
+            Q(mobile_number=user_view.mobile_number)
+        ).order_by('-created_at')
+    
+    context = {
+        'user_view': user_view,
+        'page': page,
+        'services': services,
+        'appointments': appointments,
+        'doctor':doctor,
+    }
+    
+    if appointments.exists():
+        messages.info(request, 'Your Appointment History')
+        return render(request, 'dashboard/includes/profile.html', context)
+    else:
+        messages.info(request, 'No Appointment History Found')
+        return render(request, 'user_profile/includes/profile.html', context)
+
 
 
 class DoctorProfileUpdateView(DoctorRequiredMixin, generic.UpdateView):
@@ -227,9 +265,9 @@ class DoctorProfileView(DetailView):
             {
                 "current_day": current_day,
                 "business_hours": business_hours,
-                "reviews": doctor.reviews_received.select_related(
-                    "patient", "patient__profile"
-                ).order_by("-created_at"),
+                # "reviews": doctor.reviews_received.select_related(
+                #     "patient", "patient__profile"
+                # ).order_by("-created_at"),
             }
         )
 
@@ -447,8 +485,8 @@ class DoctorsListView(ListView):
         # Add unique specializations to context
         specializations = (
             User.objects.filter(role=User.RoleChoices.DOCTOR, is_active=True)
-            .exclude(profile__specialization__isnull=True)
-            .values_list("profile__specialization", flat=True)
+            # .exclude(profile__specialization__is__null=True)
+            .values_list("specialization", flat=True)
             .distinct()
         )
 
@@ -477,7 +515,7 @@ class AppointmentListView(ListView):
 
 class AppointmentDetailView(DoctorRequiredMixin, DetailView):
     model = Booking
-    template_name = "doctors/appointment-detail.html"
+    template_name = "dashboard\includes\patient_appointment_details.html"
     context_object_name = "appointment"
 
     def get_context_data(self, **kwargs):
@@ -494,10 +532,11 @@ class AppointmentDetailView(DoctorRequiredMixin, DetailView):
             )
             .order_by("-appointment_date", "-appointment_time")
         )
+        appointment_ok = Appointment.objects.filter(appointee=patient)
 
         # Get total visits count
         context["total_visits"] = Booking.objects.filter(
-            doctor=self.request.user, patient=patient, status="completed"
+            doctor=self.request.user, patient=patient,
         ).count()
 
         return context
@@ -526,7 +565,7 @@ class AppointmentActionView(DoctorRequiredMixin, View):
 
         appointment.save()
         return redirect("doctors:dashboard")
-
+ 
 
 class MyPatientsView(DoctorRequiredMixin, ListView):
     template_name = "doctors/my-patients.html"
@@ -584,38 +623,11 @@ class AppointmentHistoryView(DoctorRequiredMixin, ListView):
         return context
 
 
-class DoctorChangePasswordView(DoctorRequiredMixin, View):
-    template_name = "doctors/change-password.html"
-
-    def get(self, request, *args, **kwargs):
-        return render(
-            request, self.template_name, {"form": ChangePasswordForm()}
-        )
-
-    def post(self, request, *args, **kwargs):
-        form = ChangePasswordForm(request.POST)
-        if form.is_valid():
-            user = request.user
-
-            if user.check_password(form.cleaned_data["old_password"]):
-                user.set_password(form.cleaned_data["new_password"])
-                user.save()
-
-                # Update session to prevent logout
-                update_session_auth_hash(request, user)
-
-                messages.success(request, "Password changed successfully")
-                return redirect("doctors:dashboard")
-            else:
-                messages.error(request, "Current password is incorrect")
-
-        return render(request, self.template_name, {"form": form})
-
 
 class PrescriptionCreateView(DoctorRequiredMixin, CreateView):
-    model = Prescription
+    model = Booking
     form_class = PrescriptionForm
-    template_name = "doctors/add_prescription.html"
+    template_name = "dashboard/includes/doctor_appointment_list_details.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -631,12 +643,12 @@ class PrescriptionCreateView(DoctorRequiredMixin, CreateView):
             Booking, id=booking_id, doctor=self.request.user
         )
 
-        if booking.status != "completed":
+        if Appointment.status != "completed":
             messages.error(
                 self.request,
                 "Can only add prescription for completed appointments",
             )
-            return redirect("doctors:appointment-detail", pk=booking_id)
+            return redirect("dashboard:patient_appointment_details", pk=booking_id)
 
         form.instance.booking = booking
         form.instance.doctor = self.request.user
@@ -646,24 +658,22 @@ class PrescriptionCreateView(DoctorRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "doctors:appointment-detail",
+            "dashboard:patient_appointment_details",
             kwargs={"pk": self.kwargs["booking_id"]},
         )
 
 
 class PrescriptionDetailView(DoctorRequiredMixin, DetailView):
-    model = Prescription
+    model = Booking
     template_name = "doctors/prescription_detail.html"
     context_object_name = "prescription"
 
     def get_queryset(self):
         # Only allow doctors to view prescriptions they wrote
-        return Prescription.objects.filter(
+        return Booking.objects.filter(
             doctor=self.request.user
         ).select_related(
+            "appointment_ok",
             "doctor",
-            "doctor__profile",
             "patient",
-            "patient__profile",
-            "booking",
         )

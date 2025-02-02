@@ -1,34 +1,32 @@
 {% extends 'accounts/base.html' %}
-{% load i18n static %}
-
-{% block title %} Sign OUT {% endblock %}
+{% load i18n static  %}
 
 {% block content %}
-    <main>
-        <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
-            <div class="container">
-                <div class="row justify-content-center form-bg-image">
-                    <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="bg-white shadow border-0 rounded p-4 p-lg-5 w-100 fmxw-500">
-                            <div class="text-center text-md-center mb-4 mt-md-0">
-                                <h1 class="h3">{% trans 'Log in' %}</h1>
-                                <p class="text-gray">{% trans "Thanks for spending some quality time with the Web site today." %}</p>
-                            </div>
-                            <div class="mt-5">
-                                <div class="d-grid mt-3">
-                                    <a href="{% url 'admin:index' %}" class="btn btn-gray-800">{% trans 'Log in again' %}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+{% include 'accounts/includes/navigation-fullscreen.html' %}
+
+
+    <main class="main-content  mt-2">
+      <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('{% static 'user_profile/images/hero-bg.jpg' %}'); background-position: top;">
+        <span class="mask bg-gradient-dark opacity-6"></span>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-5 text-center mx-auto">
+              <h1 class="text-white mb-2 mt-5">{% trans "Thanks for spending some quality time at  <br>Junction Dental Center." %}</h1>
+              <div class="d-grid mt-3">
+                <a href="{% url 'admin:index' %}" class="btn btn-800 bg-gradient-success">{% trans 'Log in again' %}</a>
             </div>
-        </section>
+            </div>
+        </div>
+      </div>
+    
+        </div>
+    
     </main>
 {% endblock %}
 
 {% block extrascript %}
     <script type="application/javascript">
-        notification.info("<p class='{{ direction.panel }}'>" + "{% trans "Thanks for spending some quality time with the Web site today." %}" + "</p>", 'top', '{{ direction.notify }}');
+        notification.info("<p class='{{ direction.panel }}'>" + "{% trans 'Thanks for spending some quality time with the Web site today.' %}" + "</p>", 'top', '{{ direction.notify }}');
     </script>
 {% endblock %}

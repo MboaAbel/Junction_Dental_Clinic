@@ -1,81 +1,12 @@
-<!DOCTYPE html>
+{% extends 'user_profile/base.html' %}
+{% block content %}
 {% load static %}
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Junction Dental - {{user.email}}</title>
-  <link rel="shortcut icon" href="{% static 'icon/Junction_Dental.png'%}" type="image/svg+xml">
-  <link href="{% static 'user_profile/css/style.css' %}" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
- <header class="header" data-header>
-    {% include 'user_profile/includes/nav bar.html' %}
-  </header>
-</head>
-
-
-{% include 'user_profile/includes/scripts.html' %}
-<body id="top">
-<div class="mt-5 pt-4">
-  {% include 'clinic/includes/messages.html' %}
-    </div>
-
- {% block content %}
-    {% endblock content %}
-    <main>
-    <article class="article">
-        <section class="section hero" aria-label="hero">
-        <div class="container">
-
-          <div class="hero-bg" style="background-image: url({% static 'user_profile/images/hero-bg.jpg' %});
-  ">
-            <div class="hero-content">
-
-              <h1 class="h1 hero-title">
-                Junction Dental Clinic <br><span class="span">Wonderful Smile</span> <br>
-              </h1>
-
-              <p class="hero-text">
-             A Smile is the Best outfit.<br>Our Priority </p>
-
-            </div>
-          </div>
-
-          <div class="hero-form-wrapper">
-            <div class="form-tab">
-
-              <button class="tab-btn active " data-tab-btn><a href="{% url 'user_profile' %}">Services</a></button>
-              <button class="tab-btn "  data-tab-btn><a href="{% url 'user_profile_view' %}">Profile</a></button>
-              <button class="tab-btn" data-tab-btn>Shop</button>
-
-            </div>
-
-            <form action="{% url 'user_search_appointment' %}" class="hero-form">
-              <div class="input-wrapper">
-                <input type="search" name="search" id="search" placeholder="Search your appointment  " required
-                  style="border-radius:20px;" class="input-field">
-
-              </div>
-
-              <button type="submit" class="btn btn-primary">Search now</button>
-
-            </form>
-          </div>
-
-        </div>
-      </section>
-
 
       <section class="section about" aria-label="about">
         <div class="container">
 
           <div class="about-banner img-holder" style="--width: 600; --height: 700;">
-            <img src="{% static 'user_profile/images/about-banner.png' %}" width="600" height="700" loading="lazy" alt="about banner"
+            <img src="{% static 'icon\0bca77a5910d18c3470d7c1353d82fd9.jpg' %}" width="600" height="700" loading="lazy" alt="about banner"
               class="img-cover">
 
             <button class="play-btn" aria-label="play video">
@@ -97,109 +28,37 @@
 
         </div>
       </section>
-      <section class="section property" aria-label="property">
-        <div class="container">
-
-          <h2 class="h2 section-title">Services Offered</h2>
-
-          <p class="section-text">
-            affordable pocket friendly smile model services
-         </p>
-
-          <ul class="property-list">
-{% for i in services %}
-            <li>
-
-
-              <div class="property-card">
-
-                <figure class="card-banner img-holder" style="--width: 800; --height: 533;">
-                  <img src="{{i.service_image.url}}" width="800" height="533" loading="lazy"
-                    alt="{{i.service_image}} " class="img-cover">
-                </figure>
-
-                <button class="card-action-btn" aria-label="add to favourite">
-                  <ion-icon name="heart" aria-hidden="true"> </ion-icon>
-                </button>
-
-                <div class="card-content">
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title"> {{i.service_title}}</a>
-                  </h3>
-
-                  <ul class="card-list">
-
-                    <li class="card-item">
-                      <div class="item-icon">
-                        <ion-icon name="start-outline"></ion-icon>
-                      </div>
-<div>
-           <span class="meta-title">Rating</span>
-                      <span class="meta-title">
-                        <span>{{i.ratings}}</span>
-                      </span>
-                    </div>
-                  </li>
-
-                    <li class="card-item">
-                    </li>
-
-                    <li class="card-item">
-                    </li>
-
-                  </ul>
-
-                  <div class="card-meta">
-
-                    <div>
-                      <span class="meta-title">Price</span>
-
-                      <span class="meta-text">Ksh.{{i.service_price}}</span>
-                    </div>
-
-
-<a href="#" class="btn btn-secondary">+ Book Now</a>
-
-                  </div>
-
-                </div>
-
-              </div>
-            </li>
- {% endfor %}
-
-          </ul>
-
-        </div>
-      </section>
+      
+      {% include 'user_profile/includes/services.html' %}
       <section class="section contact" aria-label="contact">
         <div class="container">
 
-          <h2 class="h2 section-title">Have Question ? Get in touch!</h2>
+          <h2 class="h2 section-title">Have Question ? </h2>
 
           <p class="section-text">
-         Request for Dental Consultancy Services and Video Call Your Dentist</p>
+         Request for Dental Consultancy Services.
+          Video Call Your Dentist Today</p>
 
-          <button  href="tel:+254708534184" class="btn btn-primary">
+          <button class="btn btn-primary">
+            <a href="{% url 'doctors:list' %}">
             <ion-icon name="call-outline"></ion-icon>
 
             <span class="span">Talk to Doctor</span>
+            </a>
           </button>
 
         </div>
-      </section>
-      <section class="newsletter" aria-label="newsletter">
+        <section class="newsletter" aria-label="newsletter">
         <div class="container">
 
           <div class="wrapper">
-            <h2 class="h2 section-title">Subscribe to Dental Tips</h2>
+            <h2 class="h2 section-title">Dental Tips</h2>
 
-            <p class="section-text"> Get latest updates and information.We gift you nice tooth paste</p>
+            <p class="section-text"> Get latest Blog updates</p>
           </div>
 
           <form action="" class="newsletter-form">
-            <input type="email"id="userMessage" name="email_address" placeholder="Enter your email :" aria-label="Enter your email"
+            <input type="email"id="userMessage" name="email_address" placeholder="Your email" aria-label="Enter your email"
               required class="email-field">
             <button type="submit" onclick="sendMessage()" class="btn btn-secondary">Subscribe</button>
             <script>
@@ -214,26 +73,9 @@
 
         </div>
       </section>
-    </article>
-    </main>
- {% include 'clinic/includes/footer.html' %}
- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<a href="https://wa.me/254708534184?text=Hello!%20Junction%20Dental%20would%20like%20to%20inquire%20about%20your%20dental%20services.%20Can%20you%20please%20assist%20me?" style="position:fixed;
-width:60px;
-height:60px;
-bottom:40px;
-left:40px;
-background-color:#25d366;
-color:#FFF;
-border-radius:50px;
-text-align:center;
-font-size:30px;
-box-shadow: 2px 2px 3px #999;
-z-index:100;" class="float" target="_blank">
-<i class="fa fa-whatsapp my-float" style="margin-top:16px;"></i>
-</a>
-<a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
-    <ion-icon name="arrow-up" aria-hidden="true"></ion-icon>
-  </a>
-</body>
-</html>
+      
+       
+      </section>
+    
+    
+{% endblock %}

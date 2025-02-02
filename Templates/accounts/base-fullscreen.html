@@ -1,7 +1,9 @@
-{% load i18n static %}
+{% load i18n static dashboard_tags %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
-
+{% load dashboard_tags %}
+{% get_direction as direction %}
+{% get_admin_setting as admin_setting %}
 <html lang="en">
 
 <head>
@@ -10,13 +12,14 @@
   <link rel="shortcut icon" sizes="76x76"  href="{% static 'icon/Junction_Dental.png'%}" type="image/svg+xml">
 
   <title>
-Junction Dental  Clinic
+Junction Dental Center
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
   <link href="{% static 'accounts/css/nucleo-icons.css' %}" rel="stylesheet" />
   <link href="{% static 'accounts/css/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- <link href="{% static 'clinic\css\main.min.css' %}" rel="stylesheet" /> -->
   <!-- Font Awesome Icons -->
  <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'accounts/css/argon-dashboard.css' %}" rel="stylesheet" />
@@ -28,21 +31,26 @@ Junction Dental  Clinic
 
 </head>
 
-<body class="g-sidenav-show bg-gray -100">
+<body class="navbar-vertical  g-sidenav-show bg-gray w-100">
 {% block overlay %}{% endblock overlay %}
 
 {% block sidebar %}
       {% include "accounts/includes/sidebar.html" %}
     {% endblock sidebar %}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+      {% block navigation %}
+      {% include "accounts/includes/navigation.html" %}
+    {% endblock navigation %}
 
-<main class="main-content position-relative max-height-vh-100 h-10 border-radius-lg ">
-
-
-
-
-{% block content %}
-{% endblock content %}
+    
+    {% block content %}
+    {% endblock content %}
 </main>
+{% include "accounts/includes/fixed-plugin.html" %}
+
+
+
+
   {% include "accounts/includes/scripts.html" %}
 
 

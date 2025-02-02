@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, SetPasswordForm, \
     PasswordResetForm, UsernameField
 from django.utils.translation import gettext_lazy as _
-from Accounts.models import User
+from Accounts.models import User,Profile
 
 
 class RegistrationForm(UserCreationForm):
@@ -29,7 +29,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('mobile_number', 'username', 'email',)
+        fields = ('username','email','mobile_number',)
 
         widgets = {
             'email': forms.EmailInput(attrs={
@@ -95,15 +95,61 @@ class UserProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'username',
-            'email',
+        
+            
             'first_name',
             'last_name',
+            'username',
+            'email',
+            
             'mobile_number',
-            'member_code',
-            'patient_id',
+            'national_id',
+
+            
             'next_of_kin',
-            'profile_photo',
+            'member_code',
+        
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': (
+                    'form-group '),
+                'placeholder': field,
+                'style': (
+                    'width:98%;'
+                    'border-radius: 8px;'
+                    'resize: none;'
+                    'color:  # 001100;'
+                    'height: 40px;'
+                    'border: 1px solid  # 4141;'
+                    'background-color: transparent;'
+                    ' font-family: inherit;'
+
+                ),
+
+            })
+
+class User_ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = [
+        
+            'registration_number',
+            'about',
+            'gender',
+            'blood_group',
+            'country',
+            'county',
+            'state',
+            'postal_code',
+            'town_near',
+            'allergies',
+            'medical_conditions',
+            'price_per_consultation',
 
         ]
 
@@ -128,3 +174,24 @@ class UserProfileUpdateForm(forms.ModelForm):
                 ),
 
             })
+
+
+    # medical_conditions = forms.CharField(
+    #     required=False,
+    #     widget=forms.Textarea(
+    #         attrs={
+    #             "rows": 3,
+    #             "placeholder": "List any chronic conditions, surgeries, etc.",
+    #         }
+    #     ),
+    # )
+    # allergies = forms.CharField(
+    #     required=False,
+    #     widget=forms.Textarea(
+    #         attrs={
+    #             "rows": 3,
+    #             "placeholder": "List any allergies to medications, food, etc.",
+    #         }
+    #     ),
+    # )
+    

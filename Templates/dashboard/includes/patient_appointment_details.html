@@ -1,169 +1,249 @@
-{% extends 'dashboard/base.html' %}
-{% block content %}
+{% extends 'doctors/includes/doctor-sidebar.html' %}
+{% load static %}
+{% load account %}
+ 
+{% block main %}
 
-<div class="min-height-300 bg-primary position-absolute w-100">
-  {% include 'accounts/includes/navigation-fullscreen.html' %}
-
-</div>
-
-<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+{% for i in patientdetails %}
+<div class="container-fluid page-header py-4 mb-2 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">{{app_word}} Appointment</h1>
+
+      {% if i.status == 'Cancelled' %}
+      <span class="badge btn btn-block text-white bg-danger">Cancelled</span>
+      {% elif i.status == 'Approved' %}
+      <span class="badge btn btn-block text-white bg-gradient-primary">Approved</span>
+      {% elif i.status == '0' %}
+      <span class="badge btn btn-block text-muted btn-outline-primary">Pending...</span>
+      {% elif i.status == 'Completed' %}
+      <span class="badge btn btn-block text-muted bg-success">Completed</span>
+      {% elif i.status == 'Revoked' %}
+      <span class="badge btn btn-block text-muted bg-success">Revoked</span>
+      
+      {% else %}
+      <span class="badge btn btn-block text-muted bg-success-light">{{ i.status}}</span>
+       {% endif %}
+       <span class="badge btn btn-block text-muted btn-outline-primary">{{ i.created_at }}</span>
+      
+        <h1 class="display-4 font-weight-bold text-black mb-3 animated slideInDown">JDC-{{app_word}}</h1>
+
+
+{% if request.user.is_superuser or request.user.is_staff %}
+         <!-- Submit Section -->
+ <form method="post" action="{% url 'bookings:create-booking' i.doctor_id.member.username i.appointment_number %}" id="booking-form">
+  {% csrf_token %}
+  <input type="hidden" name="selected_date" value="2025-02-01" id="selected_date">
+  <input type="hidden" name="selected_time" value="5:30" id="selected_time">
+  <div class="submit-section proceed-btn text-right">
+      <button type="submit" class="btn btn-primary submit-btn">Proceed to Update</button>
+                          
+  </div>
+</form>
+{% else %}
+
+<form action="" class="newsletter-form">
+  <input type="email"id="userMessage" name="email_address" value=" Hello Made this appointment JDC-{{app_word}} on {{ i.created_at }}  any feedback?" placeholder="{{i.appointment_number}}" aria-label="Appointment Inquiry"
+    required hidden >
+  <div class="submit-section proceed-btn text-right">
+    <button type="submit"  onclick="sendMessage()"class="btn btn-primary bg-success submit-btn"><i class="fa-whatsapp "></i>In-Box Doctor</button>
+  </div>
+  <script>
+    function sendMessage() {
+        const baseURL = "https://wa.me/+254708534184";
+        const userMessage = encodeURIComponent(document.getElementById('userMessage').value);
+        const fullURL = `${baseURL}?text=${userMessage}`;
+        window.open(fullURL, '_blank');
+    }c
+    </script>
+</form>
+
+{% endif %}
+<!-- /Submit Section -->
     </div>
 </div>
 
-<!-- Appointment Start -->
-<div class="container-xxl py-1">
-    <div class="container">
+
+<!-- only staff to update the appointment status here and add  Remarks to be send as notification to user sms  -->
+
+{% if request.user.is_authenticated and request.user.is_staff %}
+<form method="POST" action="{% url 'patient_appointment_details_remark'%}">
+  {% csrf_token %}
+            <tr>
+     <th>Remark :</th>
+     <td>
+     <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+     <input type="text" value="{{i.id}}" name="pat_id" id="pat_id" class="form-control" required="" hidden>
+   </tr>
+
+   <tr>
+     <th>Status :</th>
+     <td>
+
+    <select name="status" class="form-control wd-450" required>
+      <option value="Approved" selected="true">Approved</option>
+      <option value="Cancelled">Pending</option>
+      <option value="Cancelled">Completed</option>
+      <option value="Cancelled">Cancelled</option>
+      <option value="Cancelled">Revoked</option>
+    </select></td>
+   </tr>
+   <div class="modal-footer mt-4 mb-2">
+  <button type="button" class="btn btn-secondary " data-dismiss="modal"><a href="{% url 'user_profile' %}">Close</a></button>
+  <button type="submit" name="submit" class="btn btn-primary">Update</button>
+ </div>
+ 
+</form>
+{% endif %}
+<!-- only staff to update the appointment status here and add  Remarks to be send as notification to user sms  -->
+
+
+
+{% if doctor == request.user  %}
+
+<form method="POST" action="{% url 'patient_appointment_details_remark'%}">
+{% csrf_token %}
+ <tr>
+<th>Status :</th>
+<td>
+
+<select name="status" class="form-control wd-450" required>
+ <option value="Approved" selected="true">Approved</option>
+ <option value="Cancelled">Cancelled</option>
+ <option value="Completed">Completed</option>
+ <option value="Scheduled">Cancelled</option>
+ <option value="Processing">Processing</option>
+</select></td>
+</tr>
+<tr>
+<th>Remark :</th>
+<td>
+<textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+<input type="text" value="{% for i in patientdetails %}{{i.id}}{% endfor %}" name="pat_id" id="pat_remarks_id" class="form-control" required="" hidden>
+</tr>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<button type="submit" name="submit" class="btn btn-primary">Update</button>
+</div>
+</form>
+
+ {% endif %}
+
+
+
+<!-- Appointment Details Start -->
+<div class="container-fluid py-2">
     <div class="row">
-    <div class="col-sm-20">
     <div class="card card- table">
     <div class="card-body">
- {% include 'clinic/includes/messages.html' %}
+    <div class="card-header">
+        <h4 class="card-title">Appointment Details </h4>
+    </div>
     <div class="table-responsive">
     <table class="table table-hover table-center mb-0 datatable">
-      {% for i in patientdetails %}
-      <tr><label style="font-size: medium;text-align: center;">Appointment Number: {{i.appointment_number}}</label></tr>
+      <tr><label class="display-7 font-weight-bold text-black mb-3 animated slideInDown center;">{{i.fullname}} <br>{{i.email}} <br>
+        {{i.mobile_number}}</label>
+        <label class="display-7 ms-7">{{ i.date_of_appointment }}  {{i.time_of_appointment}}</label>
+      </tr>
+
+      <tr>
+        <td></td>
+        <th>Hello, Dr.{{i.doctor_id.member.username}}</th>
+        <td></td>
+      </tr>
         <tr>
-            
-            <th>Patient Name</th>
-            <td>{{i.fullname}}</td>
-            <th>Patient Contact Number</th>
-            <td>{{i.mobile_number}}</td>
-          </tr>
           <tr>
-            
-            <th>Patient Email</th>
-            <td>{{i.email}}</td>
-            <th>Date of Appointment</th>
-            <td>{{i.date_of_appointment}}</td>
+            <td></td>
+            <th>"{{i.additional_msg}}"</th>
+            <td></td>
           </tr>
-          <tr>
-            
-            <th>Date of Time</th>
-            <td>{{i.time_of_appointment}}</td>
-            <th>Message</th>
-            <td>{{i.additional_msg}}</td>
-          </tr>
-          <tr>
-                              
-            {% if i.status == '0' %}
-            <th>Doctor Remark</th>
-            <td>Not Updatet Yet</td>
-            {% else %}
-            <tr>
-            <th>Doctor Remark</th>
-            <td>{{ i.remark}}</td>{% endif %}
-            
-              {% if i.status == '0' %}
-              <th>Staus</th>
-              <td>Not Updatet Yet</td>
-              {% else %}
-              <th>Status</th>
-              <td>{{ i.status}}</td> {% endif %}
-              </tr>
-          
-              <tr>
-                {% if i.status == 'Completed' %}
-                <th>Prescribed Medicine</th>
-                <td>{{ i.prescription}}</td>
-                {% else %}
-                <th>Prescribed Medicine</th>
-                <td>Not Prescribed Yet</td> {% endif %}
-                </tr>
-                <tr>
-                  {% if i.status == 'Completed' %}
-                  <th>Recommended Test</th>
-                  <td>{{ i.recommendedtest}}</td>
-                  {% else %}
-                  <th>Recommended Test</th>
-                    <td>Not Recommended Yet</td>
-                         <div class="modal-body">
-                                                              <table class="table table-bordered table-hover data-tables">
-                                                                  <form method="POST" action="{% url 'patient_appointment_details_remark'%}">
-                                                {% csrf_token %}
-
-                   <tr>
-                  <th>Remark :</th>
-                  <td>
-                  <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
-                  <input type="text" value="{% for i in patientdetails %}{{i.id}}{% endfor %}" name="pat_id" id="pat_remarks_id" class="form-control" required="" hidden>
-                </tr>
-
-                <tr>
-                  <th>Status :</th>
-                  <td>
-
-                 <select name="status" class="form-control wd-450" required>
-                   <option value="Approved" selected="true">Approved</option>
-                   <option value="Cancelled">Cancelled</option>
-                   <option value="Completed">Completed</option>
-                   <option value="Scheduled">Cancelled</option>
-                   <option value="Processing">Processing</option>
-                 </select></td>
-                </tr>
-                                                    <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-               <button type="submit" name="submit" class="btn btn-primary">Update</button>
-              </div>
-                                                      </form>
-                 </table>
-              </div>
-                   {% endif %}
+          <tr>                     
+                 
                   </tr>
-    </table>
-    {% if i.status == '0'  %}
-              </div>
-
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                   <div class="modal-content">
-                    <div class="modal-header">
-                                                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                      <span aria-hidden="true">&times;</span>
-                                                                  </button>
-                                                              </div>
-                                                              <div class="modal-body">
-                                                              <table class="table table-bordered table-hover data-tables">
-                                                                  <form method="POST" action="{% url 'patient_appointment_details_remark'%}">
-                                                {% csrf_token %}
-
-                   <tr>
-                  <th>Remark :</th>
-                  <td>
-                  <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
-                  <input type="text" value="{% for i in patientdetails %}{{i.id}}{% endfor %}" name="pat_id" id="pat_id" class="form-control" required="" hidden>
-                </tr>
-
-                <tr>
-                  <th>Status :</th>
-                  <td>
-
-                 <select name="status" class="form-control wd-450" required>
-                   <option value="Approved" selected="true">Approved</option>
-                   <option value="Cancelled">Cancelled</option>
-                 </select></td>
-                </tr>
-                                                    <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-               <button type="submit" name="submit" class="btn btn-primary">Update</button>
-              </div>
-                                                      </form>
-                 </table>
-              </div>
-                                      </div>
-                                  </div>
-
-                          </div>
-{% endif %}
-              {% endfor %}
+               </table>
                         </div>
+  
+
+
+    </div>
+
+
+{% endfor %}
+    <!-- Prescribed Medications -->
+      <div class="card custom-form-card">
+      <div class="card-body">
+        <div class="card-header">
+          <h4 class="card-title">Prescribed Medication</h4>
+      </div>
+      <div class="card-body">
+        <div class="row ">
+          <tr>
+            {% if i.status == 'Completed' %}
+            <th>Prescribed Medicine</th>
+            <td>{{ i.prescription}}</td>
+            {% else %}
+            <th>Prescribed Medicine</th>
+            <td>Not Prescribed Yet</td> {% endif %}
+            </tr>
+            <tr>
+        </div>
+        </div>
+        </div>
+        </div>
+        <!-- Prescribed Medications -->
+
+
+
+  <!-- RecomMended  Tests -->
+          <div class="card custom-form-card">
+          <div class="card-body">
+            <div class="card-header">
+              <h4 class="card-title">Recommended Tests </h4>
+          </div>
+          <div class="card-body">
+            <div class="row ">
+              {% if i.status == 'Completed' %}
+              <th>Recommended Test</th>
+              <td>{{ i.recommendedtest}}</td>
+              {% else %}
+              <th>Recommended Test</th>
+                <td>Not Recommended Yet</td>
+
+            </div>
+            </div>
+            </div>
+            </div>
+             <!-- RecomMended  Tests -->
+
+
+
+
+             <!-- Doctors Remarks  -->
+              <div class="card custom-form-card">
+              <div class="card-body">
+                <div class="card-header">
+                  <h4 class="card-title">Doctor Remarks</h4>
+              </div>
+              <div class="card-body">
+                <div class="row ">
+                  {% if i.status == 'Approved' %}
+                  <td>{{ i.remark}}</td>
+                  {% else %}
+                  <tr>
+                  <th>No Doctor Remarks yet</th>
+                  <td>{{ i.remark}}</td>{% endif %}
+                  
+                   
+                </div>
+                </div>
+                </div>
+                </div>
+                 <!-- Doctors Remarks  -->
+
 
     </div>
     </div>
-    </div>
-    </div>
+  
 
 </div>
-
+</div>
+{% endif %}
 {% endblock %}

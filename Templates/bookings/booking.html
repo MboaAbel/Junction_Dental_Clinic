@@ -1,138 +1,117 @@
-{% extends 'base.html' %}
+{% extends 'doctors/includes/doctor-sidebar.html' %}
 
 {% load static %}
 {% load booking_tags %}
 
-{% block title %}Book Appointment with Dr. {{ doctor.get_full_name }}{% endblock %}
+{% block title %}Book Appointment by {{user.get_full_name }}{% endblock %}
 
-{% block content %}
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-bar">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-12 col-12">
-                    <nav aria-label="breadcrumb" class="page-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Booking</li>
-                        </ol>
-                    </nav>
-                    <h2 class="breadcrumb-title">Book Appointment</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /Breadcrumb -->
+{% block main %}
+{% block overlay %}
 
-    <!-- Page Content -->
+{% endblock overlay %}
+
+ <!-- Page Content -->
     <div class="content">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <!-- Doctor Info -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="booking-doc-info">
-                                <a href="{% url 'doctors:doctor-profile' doctor.username %}" class="booking-doc-img">
-                                    <img src="{{ doctor.profile.image }}" alt="{{ doctor.get_full_name }}">
-                                </a>
-                                <div class="booking-info">
-                                    <h4><a href="{% url 'doctors:doctor-profile' doctor.username %}">Dr. {{ doctor.get_full_name }}</a></h4>
-                                    {% if doctor.profile.specialization %}
-                                        <p class="doc-speciality">{{ doctor.profile.specialization }}</p>
-                                    {% endif %}
-                                    <div class="rating">
-                                        <i class="fas fa-star {% if doctor.rating >= 1 %}filled{% endif %}"></i>
-                                        <i class="fas fa-star {% if doctor.rating >= 2 %}filled{% endif %}"></i>
-                                        <i class="fas fa-star {% if doctor.rating >= 3 %}filled{% endif %}"></i>
-                                        <i class="fas fa-star {% if doctor.rating >= 4 %}filled{% endif %}"></i>
-                                        <i class="fas fa-star {% if doctor.rating >= 5 %}filled{% endif %}"></i>
-                                        <span class="d-inline-block average-rating">({{ doctor.reviews_count|default:0 }})</span>
-                                    </div>
-                                    {% if doctor.profile.city %}
-                                        <p class="text-muted mb-0">
-                                            <i class="fas fa-map-marker-alt"></i> {{ doctor.profile.city }}{% if doctor.profile.state %}, {{ doctor.profile.state }}{% endif %}
-                                        </p>
-                                    {% endif %}
-                                </div>
+                    <div class="container-fluid px-4 py-4 mt-6">
+                   {% for doctors in  doctors %}
+                   <div class="col-12 col-md-6 col-xl-4 mb-4">
+                        <div class="card appointment-card" style="background-image: url('{{ doctors.member.profile_photo.url }}');background-position:center; background-image:cover;">
+                             <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                         <a href="{% url 'doctors:doctor-profile' user.username %}" class="booking-doc-img">
+                                                           <img src="" alt="{{ doctor.email }}">
+                                                 </a>
+                                            
+                                                <div class="booking-info">
+                                    <h4><a href="{% url 'doctors:doctor-profile' doctors.member.username %}">Dr. {{doctors.member.get_full_name}}</a></h4>
+                                                   </div>
+                                                   {{doctors.clinic_name}}
+                                                   {{doctors.clinic_code}}
                             </div>
                         </div>
                     </div>
+                    </div>
+            
+                    {% endfor %}  
                     <!-- /Doctor Info -->
 
-                    <!-- Schedule Widget -->
-                    <div class="card booking-schedule schedule-widget">
-                        <!-- Schedule Header -->
-                        <div class="schedule-header">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <!-- Day Slot -->
-                                    <div class="day-slot">
-                                        <ul>
-                                            {% for date in week_dates %}
-                                            <li {% if date.full_date == selected_date %}class="selected"{% endif %}>
-                                                <span>{{ date.day }}</span>
-                                                <span class="slot-date">
-                                                    {{ date.day_num }} {{ date.month }}
-                                                    <small class="slot-year">{{ date.year }}</small>
-                                                </span>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <!-- /Day Slot -->
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Schedule Header -->
 
-                        <!-- Schedule Content -->
-                        <div class="schedule-cont">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <!-- Time Slot -->
-                                    <div class="time-slot">
-                                        <ul class="clearfix">
-                                            {% for date in week_dates %}
-                                            <li>
-                                                {% for slot in schedule|get_item:date.full_date %}
-                                                    <a class="timing {% if slot.is_booked %}disabled{% endif %}" 
-                                                       href="#" 
-                                                       data-date="{{ date.full_date }}" 
-                                                       data-time="{{ slot.time|time:'H:i' }}"
-                                                       {% if slot.is_booked %}disabled{% endif %}>
-                                                        <span>{{ slot.formatted_time }}</span>
-                                                    </a>
-                                                {% empty %}
-                                                    <p class="text-muted">No slots available</p>
-                                                {% endfor %}
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <!-- /Time Slot -->
-                                </div>
+
+
+                <!-- Already Booked and moved to schedules -->
+                <div class="container-fluid px-4 py-4 mt-6">
+                    <div class="row mt-4">
+
+                {% for bookings in bookings %}
+  
+                <div class="col-12 col-md-6 col-xl-4 mb-4">
+                    <div class="card appointment-card">
+                        <div class="card-body">
+                          <div class="d-flex justify-content-between">
+                              <a href="{% url 'patient_appointment_details' bookings.appointment_ok.id  bookings.appointment_ok %}">
+            
+                              <h6 class="mt-1 mb-0">JDC-{{ bookings.appointment_ok }}</h6>
+                               </a>
+                            {% if bookings.appointment_ok.status == 'Pending' %}
+                                <span class="badge btn btn-block apt-btn btn-outline-primary bg-success-light ">Pending</span>
+                            {% elif bookings.appointment_ok.status == 'Approved' %}
+                                <span class=" badge bg-gradient-primary">Approved</span>
+                            {% elif bookings.appointment_ok.status == 'Processing' %}
+                                <span class="badge bg-info">Processing</span>
+                            {% elif bookings.appointment_ok == 'Cancelled' %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% elif bookings.appointment_ok.status == 'Completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge btn btn-block text-muted btn-outline-primary">Pending...</span>
+                            {% endif %}
+                         
+                        </div>
+                            <div class="timeline-item mt-4">
+                                <p class="text-sm mb-1">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    {{ bookings.appointment_ok.created_at|date:"F d, Y" }}
+                                </p>
+                                <p class="text-sm mb-1">
+                                    <i class="fas fa-user-md me-2"></i>
+                                    Dr. {{ bookings.appointment_ok.doctor_id }}
+                                </p>
+                
+                                <a href="{% url 'patient_appointment_details' bookings.appointment_ok.id  bookings.appointment_ok %}">
+                                  <i class="btn btn-primary bg-gradient-primary btn-block">View</i>
+                            
+                                   </a>
+                                   <p class="text-sm mb-1">
+                                    {{bookings.id}}
+                                   </p>
+                                  
                             </div>
                         </div>
-                        <!-- /Schedule Content -->
                     </div>
-                    <!-- /Schedule Widget -->
+                </div>
+                {% endfor %}
+  <!-- Already Booked and moved to schedules -->
+   </div>
+   </div>
+                        {% for appointments in appointments %}
+                        
+                
 
-                    <!-- Submit Section -->
-                    <form method="post" action="{% url 'bookings:create-booking' doctor.username %}" id="booking-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="selected_date" id="selected_date">
-                        <input type="hidden" name="selected_time" id="selected_time">
-                        <div class="submit-section proceed-btn text-right">
-                            <button type="submit" class="btn btn-primary submit-btn" disabled>Proceed to Book</button>
-                        </div>
-                    </form>
-                    <!-- /Submit Section -->
+                        <a href="{% url 'patient_appointment_details' appointments.id  appointments.appointment_number %}">
+                            <i class="btn btn-primary bg-gradient-primary btn-block">{{appointments.id}} <br>View |{{appointments}}</i>
+                                   
+                             </a>
+                             {% endfor %}
                 </div>
             </div>
         </div>
     </div>
     <!-- /Page Content -->
+
 {% endblock %}
 
 {% block scripts %}

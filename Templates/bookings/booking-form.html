@@ -1,0 +1,71 @@
+{% extends 'doctors/includes/doctor-sidebar.html' %}
+{% load static %}
+{% load account %}
+ 
+{% block main %}
+<body>
+    
+
+    <div class="col-md-12 col-lg-12 col-xl-9">
+        <div class="container-fluid py-4">
+            <div class="row"> 
+              <div class="col-md-8">
+                <div class="card">
+                  <div class="card-header pb-0">
+                    <div class="d-flex align-items-center">
+                      <button class="btn btn-primary bg-gradient-primary btn-sm ms-auto">Schedule</button>
+                    </div>
+                    <h4 class="card-title">Booking</h4>
+                  </div>
+        <form method="post" enctype="multipart/form-data" novalidate class="profile-update-form pb-4" id="profileUpdateForm">
+            {% csrf_token %}
+            <!-- Profile Photo Section -->
+            <div class="row ">
+             
+   <!-- Basic Information -->
+   <div class="col-12">
+    <div class="card custom-form-card" id="basicInfoSection">
+        {% if appointment_no %}
+         <div class="card-header">
+             <h4 class="card-title">JCD-{{ appointment_no}}</h4>
+         </div>
+         {% endif %}
+         <div class="card-body">
+             <div class="row ">
+                
+                 <!-- ...existing Booked by user Appointments fields... -->
+                 {% for field in form %}
+                     {% if field.name in 'nerd,status,appointment_ok,doctor,patient,symptoms,diagnosis,medications,notes,appointment_date,appointment_time'|stringformat:'s'|slice:',' %}
+                         <div class="col-md-6">
+                             <div class="form-group custom-input-group">
+                                 <label class="form-label">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                                 <!--
+                                 This template section applies the 'addClass' custom filter to a form field, adding the CSS class 'form-input'.
+                                 The addClass filter modifies the HTML input element by appending the specified class name to enhance styling.
+                                 -->
+                                 {{ field }}
+                                 {% if field.errors %}
+                                     <div class="error-feedback">
+                                         {% for error in field.errors %}
+                                             {{ error }}
+                                         {% endfor %}
+                                     </div>
+                                 {% endif %}
+                             </div>
+                         </div>
+                     {% endif %}
+                 {% endfor %}
+             </div>
+         </div>
+     </div>
+ </div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+{% endblock %}

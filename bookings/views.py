@@ -5,18 +5,20 @@ from django.http import HttpRequest, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic.base import TemplateView
-
+from bookings.forms import ReceptionBookingForm
 from Accounts.models import User
 from doctors.models.general import TimeRange
-from mixins.custom_mixins import PatientRequiredMixin
+from mixins.custom_mixins import PatientRequiredMixin ,DoctorRequiredMixin
 from .models import Booking
+from Appointment.models import Appointment
 
 
-class BookingView(LoginRequiredMixin, View):
+
+class BookingView(DoctorRequiredMixin, View):
     template_name = "bookings/booking.html"
 
     def get_week_dates(self):
-        """Get the next 7 days starting from today"""
+        """Get the next 7 days starting   from today"""
         today = datetime.now().date()
         week_dates = []
         for i in range(7):
@@ -112,13 +114,15 @@ class BookingView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
-class BookingCreateView(LoginRequiredMixin, View):
+class BookingCreateView(DoctorRequiredMixin, View):
     template_name = "bookings/booking.html"
+    form_class = ReceptionBookingForm
+    
 
     def get(self, request: HttpRequest, *args, **kwargs):
         return render(request, self.template_name)
-
-    def post(self, request, username):
+   
+    def post(self, request, username,appointment_no):
         doctor = get_object_or_404(
             User, username=username, role=User.RoleChoices.DOCTOR
         )
@@ -131,9 +135,10 @@ class BookingCreateView(LoginRequiredMixin, View):
             messages.error(
                 request, "Please select both date and time for the appointment"
             )
-            return redirect("bookings:doctor-booking-view", username=username)
+            return redirect("bookings:reception-booking-view", username=username,)
 
         try:
+            form = ReceptionBookingForm()
             # Convert string inputs to proper date/time objects
             appointment_date = datetime.strptime(date, "%Y-%m-%d").date()
             appointment_time = datetime.strptime(time, "%H:%M").time()
@@ -144,25 +149,41 @@ class BookingCreateView(LoginRequiredMixin, View):
                 patient=request.user,
                 appointment_date=appointment_date,
                 appointment_time=appointment_time,
+                appointment_ok=appointment_no,
             )
 
             messages.success(request, "Appointment booked successfully!")
-            return redirect("bookings:booking-success", booking_id=booking.id)
+            return redirect("bookings:booking-success", booking_id=booking.id,)
 
         except ValueError:
             messages.error(request, "Invalid date or time format")
         except Exception as e:
             messages.error(request, str(e))
+            
+        
+        return render(self.request, 'bookings/booking-form.html',{'form':form,'appointment_no':appointment_no})
 
-        return redirect("bookings:doctor-booking-view", username=username)
+        # return redirect("bookings:reception-booking-view", username=username,appointment_number=appointment_no)
 
 
 class BookingSuccessView(LoginRequiredMixin, TemplateView):
     template_name = "bookings/booking-success.html"
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["booking"] = Booking.objects.get(id=kwargs["booking_id"])
+        return context  
+    
+
+
+class ReceptionBookingView(LoginRequiredMixin, TemplateView):
+    template_name = "bookings/booking-form.html"
+    form_class = ReceptionBookingForm
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data()
+        context["who-Scheduled"] = Booking.objects.get(nerd=kwargs["username"],)
         return context
 
 

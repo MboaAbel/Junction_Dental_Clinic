@@ -1,13 +1,17 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'accounts/base-fullscreen.html' %}
+{% load static %}
+{% load account %}
+ 
+  
 {% block content %}
+{% block overlay %}
 
-<div class="min-height-300 bg-primary position-absolute w-100">
-  {% include 'accounts/includes/navigation-fullscreen.html' %}
-
-</div>
-
-<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-8">
+  <div class="min-height-300 bg-gradient-primary position-absolute mb-8 w-100">
+    
+  </div>
+{% endblock overlay %}
+<div class="container-fluid page-header py-6 mb-2 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-4">
         <h1 class="display-3 text-white mb-3 animated slideInDown">All  Appointments List</h1>
     </div>
 </div>
@@ -15,7 +19,6 @@
 
 <!-- Appointment Start -->
 <div class="container-xxl py-1">
-    <div class="container">
     <div class="row">
     <div class="col-sm-20">
     <div class="card card- table">
@@ -24,14 +27,14 @@
     <div class="table-responsive">
     <table class="table table-hover table-center mb-0 datatable">
       {% for i in patientdetails %}
-      <tr><strong style="font-size: medium;text-align: center;">Appointment Number: {{i.appointment_number}}</strong> <strong style="padding-left: 600px;">Date: {{i.date_of_appointment}}</strong></tr>
+      <tr><strong style="font-size: medium;text-align: center;">JDC-{{i.appointment_number}}</strong> <strong style="padding-right: 6px;">Date: {{i.date_of_appointment}}</strong></tr>
         
       <tr>
             
             <th>Patient Name</th>
             <td>{{i.fullname}}</td>
             <th>Patient Contact Number</th>
-            <td>{{i.mobilenumber}}</td>
+            <td>{{i.mobile_number}}</td>
           </tr>
           <tr>
             

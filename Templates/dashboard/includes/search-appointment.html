@@ -1,28 +1,37 @@
-{% extends 'dashboard/base.html' %}
-
+{% extends 'accounts/base-fullscreen.html' %}
+{% load static %}
+{% load account %}
+ 
+  
 {% block content %}
-
-
-
 {% block overlay %}
-  <div class="min-height-300 bg-primary position-absolute w-100">
-    {% include 'accounts/includes/navigation-fullscreen.html' %}
 
+  <div class="min-height-300 bg-gradient-primary position-absolute mb-8 w-100">
+    
   </div>
 {% endblock overlay %}
 <!-- Appointment Start -->
 <div class="container-xxl py-8">
-    <div class="container">
     <div class="row">
     <div class="col-sm-20">
     <div class="card card- table">
     <div class="card-body">
-         {% include 'clinic/includes/messages.html' %}
+
+        {% if messages %}
+        {% for message in messages %}
+            <div class="p-3 m-3 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+            </div>
+        {% endfor %}
+    {% endif %}
   <h4 class="sub-title">Search Appointment </h4>
             <form  method="GET">
                 {% csrf_token %}
                 <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Search(By Fullname/Appointment Number)</label>
+                    <label class="col-sm-6 col-form-label">Search By Appointment Full Name</label>
                     <div class="col-sm-10">
                         <input type="text" id="query" name="query" class="form-control" required="">
                     </div>
@@ -44,11 +53,11 @@
     <thead>
     <tr>
         {% if patient %}
-    <th>Appointment Number</th>
-    <th>Patient Name</th>
-    <th>Date of Appointment</th>
-    <th>Time of Appointment</th>
-    <th>Creation Date</th>
+    <th>No.</th>
+    <th>Name</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Creation on</th>
     <th>Status</th>
     <th class="text-right">Action</th>
     </tr>
@@ -68,7 +77,7 @@
                                                 <td>{{ i.status}}</td>{% endif %}
     <td class="text-right">
     <div class="actions">
-    <a href="{% url 'patientappointmentdetails' i.id %}">
+    <a href="{% url 'patient_appointment_details' i.id i.appointment_number %}">
     <i class="btn btn-primary btn-block">View</i>
     </a>
 

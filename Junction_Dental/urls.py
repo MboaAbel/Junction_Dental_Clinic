@@ -21,12 +21,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
     path('', include('Clinic.urls')),
-    path('', include('Accounts.urls')),
-    path('', include('doctors.urls')),
-    path('', include('patients.urls')),
-    path('', include('bookings.urls')),
-    path('', include('Appointment.urls')),
+    path('Accounts/', include('Accounts.urls')),
+    path('accounts/', include('Accounts.urls')),
     path('Dashboard/', include('Dashboard.urls')),
+    path('Doctors/', include('doctors.urls')),
+    path('Reception/', include('bookings.urls')),
+    path('Patients/', include('Appointment.urls')),
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

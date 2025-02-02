@@ -1,13 +1,16 @@
-{% extends "dashboard/base.html" %}
-{% load i18n static %}
-
-{% block title %} Home {% endblock title %}
-
+{% extends 'accounts/base-fullscreen.html' %}
+{% load static %}
+{% load account %}
+ 
+  
+{% block content %}
 {% block overlay %}
-  <div class="min-height-300 bg-primary position-absolute w-100"></div>
+
+  <div class="min-height-300 bg-gradient-primary position-absolute mb-8 w-100">
+    
+  </div>
 {% endblock overlay %}
 
-{% block content %}
   <div class="container-fluid py-4">
     <div class="row">
       <div class="col-lg-8">

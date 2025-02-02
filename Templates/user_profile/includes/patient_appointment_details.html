@@ -1,0 +1,214 @@
+{% extends 'accounts/base-fullscreen.html' %}
+{% load static %}
+{% load account %}
+ 
+  
+{% block content %}
+{% block overlay %}
+
+  <div class="min-height-300 bg-gradient-primary position-absolute mb-8 w-100">
+    
+  </div>
+{% endblock overlay %}
+
+<div class="container-fluid page-header py-4 mb-2 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <h1 class="display-4 font-weight-bold text-white mb-3 animated slideInDown">JDC-{{app_word}}</h1>
+    </div>
+</div>
+
+<!-- Appointment Start -->
+<div class="container-fluid py-2">
+    <div class="row">
+    <div class="card card- table">
+    <div class="card-body">
+      <div class="card-header">
+        <h4 class="card-title">Appointment Details </h4>
+    </div>
+    <div class="table-responsive">
+    <table class="table table-hover table-center mb-0 datatable">
+      {% for i in patientdetails %}
+      <tr><label class="display-7 font-weight-bold text-black mb-3 animated slideInDown center;">{{i.fullname}} <br>{{i.email}} <br>
+        {{i.mobile_number}}</label>
+
+
+        <label class="display-7 ms-7">{{i.date_of_appointment}}  {{i.time_of_appointment}}</label>
+      
+      </tr>
+        <tr>
+            
+          {% if i.status == '0' %}
+          <th>Staus</th>
+          <td>Not Updated Yet</td>
+          {% else %}
+          <th>Status</th>
+          <td>{{ i.status}}</td> {% endif %}
+          </tr> 
+          </tr>
+         
+          <tr>
+            
+            
+            <td></td>
+            <th>{{i.additional_msg}}</th>
+            <td></td>
+          </tr>
+          <tr>
+                              
+            {% if i.status == '0' %}
+            <th>Doctor Remark</th>
+            <td>Not Updated Yet</td>
+            {% else %}
+            <tr>
+            <th>Doctor Remark</th>
+            <td>{{ i.remark}}</td>{% endif %}
+            
+             
+          
+              <tr>
+                {% if i.status == 'Completed' %}
+                <th>Prescribed Medicine</th>
+                <td>{{ i.prescription}}</td>
+                {% else %}
+                <th>Prescribed Medicine</th>
+                <td>Not Prescribed Yet</td> {% endif %}
+                </tr>
+                <tr>
+                  {% if i.status == 'Completed' %}
+                  <th>Recommended Test</th>
+                  <td>{{ i.recommendedtest}}</td>
+                  {% else %}
+                  <th>Recommended Test</th>
+                    <td>Not Recommended Yet</td>
+
+                    {% if doctor == request.user  %}
+                  <div class="modal-body">
+                  <table class="table table-bordered table-hover data-tables">
+                  <form method="POST" action="{% url 'patient_appointment_details_remark'%}">
+                  {% csrf_token %}
+
+                  
+
+                <tr>
+                  <th>Status :</th>
+                  <td>
+
+                 <select name="status" class="form-control wd-450" required>
+                   <option value="Approved" selected="true">Approved</option>
+                   <option value="Cancelled">Cancelled</option>
+                   <option value="Completed">Completed</option>
+                   <option value="Scheduled">Cancelled</option>
+                   <option value="Processing">Processing</option>
+                 </select></td>
+                </tr>
+                <tr>
+                  <th>Remark :</th>
+                  <td>
+                  <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+                  <input type="text" value="{% for i in patientdetails %}{{i.id}}{% endfor %}" name="pat_id" id="pat_remarks_id" class="form-control" required="" hidden>
+                </tr>
+               <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button type="submit" name="submit" class="btn btn-primary">Update</button>
+              </div>
+               </form>
+                 </table>
+              </div>
+                   {% endif %}
+                  </tr>
+               </table>
+            {% if i.status == '0'  %}
+              </div>
+               <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                   <div class="modal-content">
+                    <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              <div class="modal-body">
+             <table class="table table-bordered table-hover data-tables">
+            <form method="POST" action="{% url 'patient_appointment_details_remark'%}">
+               {% csrf_token %}
+                         <tr>
+                  <th>Remark :</th>
+                  <td>
+                  <textarea name="remark" placeholder="Remark" rows="12" cols="14" class="form-control wd-450" required="true"></textarea></td>
+                  <input type="text" value="{% for i in patientdetails %}{{i.id}}{% endfor %}" name="pat_id" id="pat_id" class="form-control" required="" hidden>
+                </tr>
+
+                <tr>
+                  <th>Status :</th>
+                  <td>
+
+                 <select name="status" class="form-control wd-450" required>
+                   <option value="Approved" selected="true">Approved</option>
+                   <option value="Cancelled">Cancelled</option>
+                 </select></td>
+                </tr>
+                                                    <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button type="submit" name="submit" class="btn btn-primary">Update</button>
+              </div>
+              {% endif %}
+           </form>
+                 </table>
+              </div>
+                                      </div>
+                                  </div>
+
+                          </div>
+                {% endif %}
+              {% endfor %}
+                        </div>
+  
+
+
+    </div>
+
+    
+      <div class="card custom-form-card">
+      <div class="card-body">
+        <div class="card-header">
+          <h4 class="card-title">Prescribed Medication</h4>
+      </div>
+      <div class="card-body">
+        <div class="row ">
+        </div>
+        </div>
+        </div>
+        </div>
+
+  
+          <div class="card custom-form-card">
+          <div class="card-body">
+            <div class="card-header">
+              <h4 class="card-title">Recommended Tests </h4>
+          </div>
+          <div class="card-body">
+            <div class="row ">
+            </div>
+            </div>
+            </div>
+            </div>
+
+              <div class="card custom-form-card">
+              <div class="card-body">
+                <div class="card-header">
+                  <h4 class="card-title">Doctor Remarks</h4>
+              </div>
+              <div class="card-body">
+                <div class="row ">
+                </div>
+                </div>
+                </div>
+                </div>
+    </div>
+    </div>
+  
+
+</div>
+</div>
+
+{% endblock %}

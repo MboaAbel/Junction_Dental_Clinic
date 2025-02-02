@@ -1,0 +1,497 @@
+{% extends 'doctors/includes/doctor-sidebar.html' %}
+{% load static %}
+
+{% block title %}Profile Settings{% endblock %}
+{% block css %}
+
+    {{ block.super }}
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/select2/css/select2.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/plugins/dropzone/dropzone.min.css' %}">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+    <style>
+        .spinner {
+            display: none;
+        }
+
+        .htmx-request .spinner {
+            display: inline;
+        }
+
+        .htmx-request.spinner {
+            display: inline;
+        }
+
+        .htmx-request.spinner ~ .button-text {
+            display: none;
+        }
+    </style>
+
+{% endblock %}
+
+{% block scripts %}
+
+    {{ block.super }}
+
+    <!-- Sticky Sidebar JS -->
+    <script src="{% static 'assets/plugins/theia-sticky-sidebar/ResizeSensor.js' %}"></script>
+    <script src="{% static 'assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+
+    <!-- Dropzone JS -->
+    <script src="{% static 'assets/plugins/dropzone/dropzone.min.js' %}"></script>
+
+    <!-- Bootstrap Tagsinput JS -->
+    <script src="{% static 'assets/plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.js' %}"></script>
+
+    <!-- Profile Settings JS -->
+    <script src="{% static 'assets/js/profile-settings.js' %}"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'assets/js/script.js' %}"></script>
+
+{% endblock %}
+
+{% block page_name1 %}Dashboard{% endblock %}
+{% block page_name2 %}Profile{% endblock %}
+
+{% block main %}
+
+    <!-- Basic Information -->
+    <div class="content mt-8">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+    <div class="card">
+        <div class="card-body" id="basic-profile-data">
+            <h4 class="card-title">Basic Information</h4>
+            <div class="row form-row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="change-avatar">
+                            <div class="profile-img">
+                                {% if user.profile.avatar %}
+                                    <img src="{{ user.profile.avatar.url }}" alt="User Image">
+                                {% endif %}
+                            </div>
+                            <div class="upload-img">
+                                <div class="change-photo-btn">
+                                    <span><i class="fa fa-upload"></i> Upload Photo</span>
+                                    <input type="file" 
+                                           class="upload" 
+                                           name="avatar" 
+                                           accept="image/*"
+                                           onchange="previewImage(this)">
+                                           </div>
+                                </div>
+                                <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Username <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" readonly value="{{ user.username }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" readonly value="{{ user.email|default:'' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>First Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="first_name" value="{{ user.first_name|default:'' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Last Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="last_name" value="{{ user.last_name|default:'' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" class="form-control" name="phone" value="{{ user.mobile_number|default:'' }}">
+                    </div>
+                </div>
+                {#                <div class="col-md-6">#}
+                {#                    <div class="form-group">#}
+                {#                        <label>Gender</label>#}
+                {#                        <select class="form-control select">#}
+                {#                            <option>Select</option>#}
+                {#                            <option>Male</option>#}
+                {#                            <option>Female</option>#}
+                {#                        </select>#}
+                {#                    </div>#}
+                {#                </div>#}
+                <div class="col-md-6">
+                    <div class="form-group mb-0">
+                        <label>Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" name="dob" required
+                               value="{% if user.profile.dob %}{{ user.profile.dob|date:'Y-m-d' }}{% endif %}">
+                    </div>
+                </div>
+            </div>
+            <button
+                    class="btn btn-primary btn-sm pull-right"
+                    hx-put="{% url 'update-basic-information' %}"
+                    hx-include="#basic-profile-data"
+                    hx-disabled-elt="this"
+                    hx-swap="none"
+                    hx-encoding="multipart/form-data"
+            >
+                <i class="fa fa-plus-circle"></i>
+                Update
+            </button>
+        </div>
+    </div>
+    <!-- /Basic Information -->
+
+    <!-- About Me -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">About Me</h4>
+            <div class="form-group mb-0">
+                <label>Biography</label>
+                <textarea class="form-control" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- /About Me -->
+
+    <!-- Clinic Info -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Clinic Info</h4>
+            <div class="row form-row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Clinic Name</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Clinic Address</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Clinic Images</label>
+                        <form action="#" class="dropzone"></form>
+                    </div>
+                    <div class="upload-wrap">
+                        <div class="upload-images">
+                            <img src="{% static 'assets/img/features/feature-01.jpg' %}" alt="Upload Image">
+                            <a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                        <div class="upload-images">
+                            <img src="{% static 'assets/img/features/feature-02.jpg' %}" alt="Upload Image">
+                            <a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm">
+                                <i class="far fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Clinic Info -->
+
+    <!-- Pricing -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Pricing</h4>
+
+            <div class="form-group mb-0">
+                <div id="pricing_select">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="price_free" name="rating_option" class="custom-control-input"
+                               value="price_free" checked>
+                        <label class="custom-control-label" for="price_free">Free</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="price_custom" name="rating_option" value="custom_price"
+                               class="custom-control-input">
+                        <label class="custom-control-label" for="price_custom">Custom Price (Taka)</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row custom_price_cont" id="custom_price_cont" style="display: none;">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="custom_rating_input" name="custom_rating_count" value=""
+                           placeholder="20">
+                    <small class="form-text text-muted">Custom price you can add</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /Pricing -->
+
+    <!-- Services and Specialization -->
+    <div class="card services-card">
+        <div class="card-body" id="specialization-data">
+            <h4 class="card-title">Services and Specialization</h4>
+            {#            <div class="form-group">#}
+            {#                <label>Services</label>#}
+            {#                <input type="text" data-role="tagsinput" class="input-tags form-control" placeholder="Enter Services"#}
+            {#                       name="services" value="Tooth cleaning " id="services">#}
+            {#                <small class="form-text text-muted">Note : Type & Press enter to add new services</small>#}
+            {#            </div>#}
+            <div class="form-group mb-0">
+                <label>Specialization </label>
+                <input class="input-tags form-control" type="text" data-role="tagsinput"
+                       placeholder="Enter Specialization" name="specialist" value="{{ user.profile.specialization|default_if_none:'' }}"
+                       id="specialist">
+                <small class="form-text text-muted">Note : Type & Press enter to add new specialization</small>
+            </div>
+            <button
+                    class="btn btn-primary btn-sm pull-right"
+                    hx-put="{% url 'doctors:update-specialization' %}"
+                    hx-include="#specialization-data"
+                    hx-disabled-elt="this"
+                    hx-swap="none"
+            >
+                <i class="fa fa-plus-circle"></i>
+                Update
+            </button>
+        </div>
+    </div>
+    <!-- /Services and Specialization -->
+
+    <!-- Education -->
+    <div class="card">
+        <div class="card-body" id="education-data">
+            <h4 class="card-title">Education</h4>
+            <div class="education-info">
+                {% for education in user.educations.all %}
+                    <div class="row form-row education-cont">
+                        <div class="col-12 col-md-10 col-lg-11">
+                            <div class="row form-row">
+                                <input type="number" hidden class="form-control" name="id" value="{{ education.id }}">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>Degree</label>
+                                        <input type="text" class="form-control" name="degree" required
+                                               value="{{ education.degree }}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>College/Institute</label>
+                                        <input type="text" class="form-control" name="college" required
+                                               value="{{ education.college }}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>Year of Completion</label>
+                                        <input type="number" class="form-control" name="year_of_completion" required
+                                               value="{{ education.year_of_completion }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter != 1 %}
+                            <div class="col-12 col-md-2 col-lg-1">
+                                <label class="d-md-block d-sm-none d-none">&nbsp;</label>
+                                <a href="#" class="btn btn-danger trash"><i class="far fa-trash-alt"></i></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="add-more">
+                <a href="javascript:void(0);" class="add-education"><i class="fa fa-plus-circle"></i> Add More</a>
+                <button
+                        class="btn btn-primary btn-sm pull-right"
+                        hx-put="{% url 'doctors:update-education' %}"
+                        hx-include="#education-data"
+                        hx-disabled-elt="this"
+                        hx-swap="none"
+                >
+                    <i class="fa fa-plus-circle"></i>
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- /Education -->
+
+    <!-- Experience -->
+    <div class="card">
+        <div class="card-body" id="experience-data">
+            <h4 class="card-title">Experience</h4>
+            <div class="experience-info">
+                {% for experience in user.experiences.all %}
+                    <div class="row form-row experience-cont">
+                        <div class="col-12 col-md-10 col-lg-11">
+                            <div class="row form-row">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <input type="number" hidden class="form-control" name="id"
+                                           value="{{ experience.id }}">
+                                    <div class="form-group">
+                                        <label>Hospital Name</label>
+                                        <input type="text" class="form-control" name="institution"
+                                               value="{{ experience.institution }}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>From</label>
+                                        <input type="text" class="form-control" name="from_year"
+                                               value="{{ experience.from_year }}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>To</label>
+                                        <input type="text" class="form-control" name="to_year"
+                                               value="{{ experience.to_year }}">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label>Designation</label>
+                                        <input type="text" class="form-control" name="designation"
+                                               value="{{ experience.designation }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter != 1 %}
+                            <div class="col-12 col-md-2 col-lg-1">
+                                <label class="d-md-block d-sm-none d-none">&nbsp;</label>
+                                <a href="#" class="btn btn-danger trash"><i class="far fa-trash-alt"></i></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="add-more">
+                <a href="javascript:void(0);" class="add-experience">
+                    <i class="fa fa-plus-circle"></i> Add More
+                </a>
+                <button
+                        class="btn btn-primary btn-sm pull-right"
+                        hx-put="{% url 'doctors:update-experience' %}"
+                        hx-include="#experience-data"
+                        hx-disabled-elt="this"
+                        hx-swap="none"
+                >
+                    <i class="fa fa-plus-circle"></i>
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- /Experience -->
+
+    <!-- Registrations -->
+    <div class="card">
+        <div class="card-body" id="registration-number-data">
+            <h4 class="card-title">Registrations</h4>
+            <div class="registrations-info">
+                <div class="row form-row reg-cont">
+                    <div class="col-12 col-md-5">
+                        <div class="form-group">
+                            <label>BM&DC Full Registration Number</label>
+                            <input type="number" class="form-control" name="registration_number" maxlength="6"
+                                   value="{{ user.registration_number|default:'' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-more">
+                <button
+                        class="btn btn-primary btn-sm pull-right"
+                        hx-put="{% url 'doctors:update-registration-number' %}"
+                        hx-include="#registration-number-data"
+                        hx-disabled-elt="this"
+                        hx-swap="none"
+                        hx-indicator="#spinner"
+                >
+                    <svg class="spinner animate-spin" id="spinner" xmlns="http://www.w3.org/2000/svg" width="24"
+                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                    </svg>
+                    <i class="fa fa-plus-circle"></i>
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- /Registrations -->
+
+    {#    <div class="submit-section submit-btn-bottom">#}
+    {#        <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>#}
+    {#    </div>#}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const dobInput = document.getElementById('dob');
+            if (!dobInput) return;
+
+            // When form submits, keep the ISO format YYYY-MM-DD
+            dobInput.form?.addEventListener('submit', () => {
+                const date = new Date(dobInput.value);
+                if (!isNaN(date)) {
+                    // Ensure date is in YYYY-MM-DD format for submission
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    dobInput.value = `${year}-${month}-${day}`;
+                }
+            });
+        });
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = input.closest('.change-avatar').querySelector('.profile-img img');
+                    if (img) {
+                        img.src = e.target.result;
+                    } else {
+                        const newImg = document.createElement('img');
+                        newImg.src = e.target.result;
+                        newImg.alt = 'User Image';
+                        input.closest('.change-avatar').querySelector('.profile-img').appendChild(newImg);
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+{% endblock %}

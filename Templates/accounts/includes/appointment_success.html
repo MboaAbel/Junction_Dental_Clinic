@@ -3,7 +3,6 @@
 
 {% block content %}
 
-  {% include 'accounts/includes/navigation-fullscreen.html' %}
 
     <main class="main-content  mt-0">
       <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('{% static 'user_profile/images/hero-bg.jpg' %}'); background-position: top;">
@@ -13,11 +12,9 @@
           <div class="row justify-content-center">
              <div class="col-lg-5 text-center mx-auto">
               {% include 'clinic/includes/messages.html' %}
-
               {% if appointment_details %}
               <h1 class="text-white mb-2 mt-5">Welcome,  {{appointment_details.fullname}} <br>
-              Appointment Code:{{appointment_details.appointment_number}} </h1>
-              <h5 style="color:black;" class="text-lead  mb-2 mt-5">⊘Save your Appointment Code.To be used once you visit  </h5>
+              Appointment No.<br> JDC-{{appointment_details.appointment_number}} </h1>
               {% endif%}
             </div>
           </div>
@@ -78,17 +75,21 @@
                   <div class="form-check form-check-info text-start" >
                   {% if request.user.is_authenticated and appointment_details.email == user.email %}
                 <div class="text-center">
-        <a href="{% url 'user_profile_view' %}" class="btn btn-primary w-100 my-4 mb-2">  {{user.username}}, Login</a>
+        <a href="{% url 'user_profile_view' %}" class="btn btn-primary w-100 my-2 mb-2">  {{user.username}}, Login</a>
                 </div> {% else %}
          <a href="{% url 'login' %}" class="btn btn-primary w-100 my-4 mb-2">    {{appointment_details.fullname}}, Login</a>
            {% endif %}
-                       <a href="{% url 'register' %}" class="btn btn-secondary  w-100 my-4 mb-2">Create your Account</a>
+                       <a href="{% url 'register' %}" 
+                       class=" btn btn-block apt-btn btn-outline-primary bg-success-light w-100 my-4 mb-2 "
+                    >Create your Account</a>
 
 
                   </div>
                      <div class="text-center">
-                    <a  href="{% url 'hero' %}" >view Junction Dental Clinic
-                    </a>
+                    <a  href="{% url 'hero' %}" >
+                    
+                    <h5 style="color:black;" class="text-lead  mb-2 mt-5">⊘Save your Appointment Code.To be used once you visit  </h5>
+                  </a>
                   </div>
               </div>
 

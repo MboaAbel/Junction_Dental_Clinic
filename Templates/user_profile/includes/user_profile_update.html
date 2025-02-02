@@ -1,152 +1,153 @@
-{% extends "user_profile/base.html" %}
-
+{% extends 'user_profile/includes/patient-sidebar.html' %}
 {% load static %}
 
-{% block title %}Profile Settings{% endblock %}
+  
+{% block main %}
 
-{% block content %}
-<div class="card form-container" id="profile-form-container">
-    <div class="card-body">
-        <!-- Error Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endfor %}
-        {% endif %}
 
-        <!-- Profile Settings Form -->
-        <form method="post" enctype="multipart/form-data" novalidate class="profile-update-form" id="profileUpdateForm">
-            {% csrf_token %}
+                                        <div class="col-md-7 col-lg-8 col-xl-9">
+                                            <div class="container-fluid py-4">
+                                                <div class="row"> 
+                                            
+                                                  <div class="col-md-8">
 
-            <!-- Profile Photo Section -->
-            <div class="row form-row">
-                <div class="col-12 col-md-12">
-                    <div class="form-group profile-photo-section">
-                        <div class="change-avatar">
-                            <div class="profile-img">
-                                {% if user.profile_photo %}
-                                    <img src="{{ user.profile_photo.url }}" alt="User Image">
-                                {% else %}
-                                    <img src="{% static 'img/default-avatar.png' %}" alt="Default Image">
-                                {% endif %}
-                            </div>
-                            <div class="upload-img">
-                                <div class="change-photo-btn">
-                                    <span><i class="fa fa-upload"></i> Upload Photo</span>
-                                    <input type="file" class="upload" name="avatar" accept="image/*">
+                                                    {% if messages %}
+                                                    {% for message in messages %}
+                                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                                            {{ message }}
+                                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                    <div class="card">
+                                                      <div class="card-header pb-0">
+                                                        <div class="d-flex align-items-center">
+                                                          <button class="btn btn-primary btn-sm ms-auto">Update</button>
+                                                        </div>
+                                                      </div>
+                                            <form method="post" action="{% url 'profile-setting' %}" enctype="multipart/form-data" novalidate class="profile-update-form pb-4" id="profileUpdateForm">
+                                                {% csrf_token %}
+                                                <!-- Profile Photo Section -->
+                                                <div class="row ">
+                                                 
+                                       <!-- Basic Information -->
+                                       <div class="col-12">
+                                        <div class="card custom-form-card" id="basicInfoSection">
+                                             <div class="card-header">
+                                                 <h4 class="card-title">Basic Information</h4>
+                                             </div>
+                                             <div class="card-body">
+                                                 <div class="row ">
+                                                     <!-- ...existing basic information fields... -->
+                                                     {% for field in form %}
+                                                         {% if field.name in 'first_name,last_name,username,email,member_code,mobile_number,national_id'|stringformat:'s'|slice:',' %}
+                                                             <div class="col-md-6">
+                                                                 <div class="form-group custom-input-group">
+                                                                     <label class="form-label">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+                                                                     <!--
+                                                                     This template section applies the 'addClass' custom filter to a form field, adding the CSS class 'form-input'.
+                                                                     The addClass filter modifies the HTML input element by appending the specified class name to enhance styling.
+                                                                     -->
+                                                                     {{ field }}
+                                                                     {% if field.errors %}
+                                                                         <div class="error-feedback">
+                                                                             {% for error in field.errors %}
+                                                                                 {{ error }}
+                                                                             {% endfor %}
+                                                                         </div>
+                                                                     {% endif %}
+                                                                 </div>
+                                                             </div>
+                                                         {% endif %}
+                                                     {% endfor %}
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                   
+
+                                   <!-- Medical Information -->
+                                   <div class="col-12">
+                                     <div class="card custom-form-card" id="medicalInfoSection">
+                                         <div class="card-header">
+                                             <h4 class="card-title">Medical Information</h4>
+                                         </div>
+                                         <div class="card-body">
+                                             <div class="row ">
+                                                 {% for field in form_1 %}
+                                                     {% if field.name in 'medical_conditions,blood_group,allergies'|stringformat:'s'|slice:',' %}
+                                                         <div class="col-md-6">
+                                                             <div class="form-group custom-input-group">
+                                                                 <label class="form-label">{{ field.label }}</label>
+                                                                 {{ field }}
+                                                                 {% if field.errors %}
+                                                                     <div class="error-feedback">
+                                                                         {% for error in field.errors %}
+                                                                             {{ error }}
+                                                                         {% endfor %}
+                                                                     </div>
+                                                                 {% endif %}
+                                                             </div>
+                                                         </div>
+                                                     {% endif %}
+                                                 {% endfor %}
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                 
+                                 <!-- Address Information -->
+                                 <div class="col-12">
+                                     <div class="card custom-form-card" id="addressInfoSection">
+                                         <div class="card-header">
+                                             <h4 class="card-title">Address Information</h4>
+                                         </div>
+                                         <div class="card-body">
+                                             <div class="row ">
+                                                 {% for field in form_1 %}
+                                                     {% if field.name in 'town_near,state,postal_code,county,country'|stringformat:'s'|slice:',' %}
+                                                         <div class="{% if field.name == 'address' %}col-md-6{% else %}col-md-6{% endif %}">
+                                                             <div class="form-group custom-input-group">
+                                                                 <label class="form-label">{{ field.label }}</label>
+                                                                 {{ field }}
+                                                                 {% if field.errors %}
+                                                                     <div class="error-feedback">
+                                                                         {% for error in field.errors %}
+                                                                             {{ error }}
+                                                                         {% endfor %}
+                                                                     </div>
+                                                                 {% endif %}
+                                                             </div>
+                                                         </div>
+                                                     {% endif %}
+                                                 {% endfor %}
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 
+                                    <div class=" mt-2 s-flex align-items-center">
+                                      <button  type="submit" class="mt-2 btn btn-primary btn-sm ms-auto">Update</button>
+                                   
+                                  </div>
+                             </form>
+                                                       </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            <!-- /Page Content -->
 
-                <!-- Basic Information -->
-                <div class="col-12">
-                    <div class="card custom-form-card" id="basicInfoSection">
-                        <div class="card-header">
-                            <h4 class="card-title">Basic Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row form-row">
-                                <!-- ...existing basic information fields... -->
-                                {% for field in form %}
-                                    {% if field.name in 'first_name,last_name,dob,blood_group,gender,phone'|stringformat:'s'|slice:',' %}
-                                        <div class="col-md-6">
-                                            <div class="form-group custom-input-group">
-                                                <label class="form-label">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
-                                                <!--
-                                                This template section applies the 'addClass' custom filter to a form field, adding the CSS class 'form-input'.
-                                                The addClass filter modifies the HTML input element by appending the specified class name to enhance styling.
-                                                -->
-                                                {{ field }}
-                                                {% if field.errors %}
-                                                    <div class="error-feedback">
-                                                        {% for error in field.errors %}
-                                                            {{ error }}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
+            <hr class="horizontal dark">
 
-                <!-- Medical Information -->
-                <div class="col-12">
-                    <div class="card custom-form-card" id="medicalInfoSection">
-                        <div class="card-header">
-                            <h4 class="card-title">Medical Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row form-row">
-                                {% for field in form %}
-                                    {% if field.name in 'medical_conditions,allergies'|stringformat:'s'|slice:',' %}
-                                        <div class="col-12">
-                                            <div class="form-group custom-input-group">
-                                                <label class="form-label">{{ field.label }}</label>
-                                                {{ field }}
-                                                {% if field.errors %}
-                                                    <div class="error-feedback">
-                                                        {% for error in field.errors %}
-                                                            {{ error }}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+        </div>
+      </div>
 
-                <!-- Address Information -->
-                <div class="col-12">
-                    <div class="card custom-form-card" id="addressInfoSection">
-                        <div class="card-header">
-                            <h4 class="card-title">Address Information</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row form-row">
-                                {% for field in form %}
-                                    {% if field.name in 'address,city,state,postal_code,country'|stringformat:'s'|slice:',' %}
-                                        <div class="{% if field.name == 'address' %}col-12{% else %}col-md-6{% endif %}">
-                                            <div class="form-group custom-input-group">
-                                                <label class="form-label">{{ field.label }}</label>
-                                                {{ field }}
-                                                {% if field.errors %}
-                                                    <div class="error-feedback">
-                                                        {% for error in field.errors %}
-                                                            {{ error }}
-                                                        {% endfor %}
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="submit-section text-center mt-4">
-                <button type="submit" class="form-submit-btn">Save Changes</button>
-            </div>
-        </form>
-    </div>
+  
 </div>
 {% endblock %}
 

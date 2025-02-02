@@ -7,6 +7,7 @@ from Dashboard.models import DoctorReg
 
 class Appointment(models.Model):
 
+    nerd = models.CharField(max_length=50, null=True,blank=True) # on creating an appointment by actual filling the form. can be a bot,admin,staff,or you 
     appointment_number = models.IntegerField(default=0, null='TRUE')
     appointee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patients', null=True, blank=False)
     fullname = models.CharField(max_length=250)
@@ -27,5 +28,5 @@ class Appointment(models.Model):
     payment = models.BooleanField('Payment', default=False, blank=True, null=True, choices=PAYMENT_CHOICES)
 
     def __str__(self):
-        return f"Appointment #{self.appointment_number} - {self.fullname}"
+        return f"{self.appointment_number}"
 

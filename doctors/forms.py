@@ -1,7 +1,7 @@
 from django import forms
 
 from Accounts.models import User
-from bookings.models import Prescription
+from bookings.models import Booking
 from ckeditor.widgets import CKEditorWidget
 
 
@@ -13,7 +13,7 @@ class DoctorProfileForm(forms.ModelForm):
 
 class PrescriptionForm(forms.ModelForm):
     class Meta:
-        model = Prescription
+        model = Booking
         fields = ["symptoms", "diagnosis", "medications", "notes"]
         widgets = {
             "symptoms": forms.Textarea(

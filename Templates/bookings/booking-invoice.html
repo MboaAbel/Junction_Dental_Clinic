@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "accounts/base-fullscreen.html" %}
 {% load static %}
 
 {% block title %}Invoice{% endblock %}
 
 {% block content %}
 <div class="content">
-    <div class="container-fluid">
+    <div class="container-fluid mt-8">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <div class="invoice-content">
@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="invoice-logo">
-                                    <img src="{% static 'assets/img/logo2.svg' %}" alt="logo">
+                                    <img src="{% static 'icon/Junction_Dental.png' %}" alt="logo">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -77,7 +77,7 @@
                                                 <td>Consultation Fee</td>
                                                 <td class="text-center">{{ booking.appointment_date }}</td>
                                                 <td class="text-center">{{ booking.appointment_time|time:"h:i A" }}</td>
-                                                <td class="text-right">৳{{ booking.doctor.profile.price_per_consultation }}</td>
+                                                <td class="text-right">Ksh.{{ booking.doctor.profile.price_per_consultation }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -89,7 +89,7 @@
                                         <tbody>
                                             <tr>
                                                 <th>Total Amount:</th>
-                                                <td><span>৳{{ total }}</span></td>
+                                                <td><span>Ksh.{{ total }}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -102,7 +102,7 @@
                     <!-- Invoice Information -->
                     <div class="other-info">
                         <h4>Booking Information</h4>
-                        <p class="text-muted mb-0">
+                        <p class="text-muted mb-5">
                             Status: <span class="badge badge-pill 
                                 {% if booking.status == 'confirmed' %}bg-success-light{% endif %}
                                 {% if booking.status == 'pending' %}bg-warning-light{% endif %}

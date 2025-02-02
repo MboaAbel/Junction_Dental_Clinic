@@ -3,91 +3,48 @@
     <div class="container">
         <p class="section-subtitle text-center">Your Doc</p>
         <h2 class="h2 section-title text-center">Best Expert Dentist</h2>
+
+
         <ul class="has-scrollbar">
-            <li class="scrollbar-item">
-                <div class="doctor-card">
-                    <div class="card-banner img-holder" style="--width: 460; --height: 500; background-color: rgba(0,0,0,0.1); border-radius: 40px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); z-index: 10; display: flex; box-shadow: 20px 20px 80px 20px rgba(0,0,0,0.1);">
-                        <img src="{% static 'clinic/images/doctor-2.png' %}" width="460" height="500" loading="lazy" alt="Ella Thompson" class="img-cover">
-                    </div>
-                    <h3 class="h3">
-                        <a href="#" class="card-title">Ella Thompson</a>
-                    </h3>
-                    <p class="card-subtitle">Dentist</p>
-                    <ul class="card-social-list">
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-facebook"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-twitter"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-instagram"></ion-icon>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="scrollbar-item">
-                <div class="doctor-card">
-                    <div class="card-banner img-holder" style="--width: 460; --height: 500; background-color: rgba(0,0,0,0.1); border-radius: 40px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); z-index: 10; display: flex; box-shadow: 20px 20px 80px 20px rgba(0,0,0,0.1);">
-                        <img src="{% static 'clinic/images/doctor-1.png' %}" width="460" height="500" loading="lazy" alt="Vincent Cooper" class="img-cover">
-                    </div>
-                    <h3 class="h3">
-                        <a href="#" class="card-title">Vincent Cooper</a>
-                    </h3>
-                    <p class="card-subtitle">Dentist</p>
-                    <ul class="card-social-list">
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-facebook"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-twitter"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-instagram"></ion-icon>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="scrollbar-item">
-                <div class="doctor-card">
-                    <div class="card-banner img-holder" style="--width: 460; --height: 500; background-color: rgba(0,0,0,0.1); border-radius: 40px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); z-index: 10; display: flex; box-shadow: 20px 20px 80px 20px rgba(0,0,0,0.1);">
-                        <img src="{% static 'clinic/images/doctor-4.png' %}" width="460" height="500" loading="lazy" alt="Danielle Bryant" class="img-cover">
-                    </div>
-                    <h3 class="h3">
-                        <a href="#" class="card-title">Danielle Bryant</a>
-                    </h3>
-                    <p class="card-subtitle">Dentist</p>
-                    <ul class="card-social-list">
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-facebook"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-twitter"></ion-icon>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="card-social-link">
-                                <ion-icon name="logo-instagram"></ion-icon>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+
+
+
+         <!-- Doctor Widget -->
+    
+         {% for doctor in doctors %}
+         <li class="scrollbar-item">
+             <div class="doctor-card">
+                 <div  href="{% url 'doctors:doctor-profile' doctor.username %}" class="card-banner img-holder" style="--width: 460; --height: 500; background-color: rgba(0,0,0,0.1); border-radius: 40px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); z-index: 10; display: flex; box-shadow: 20px 20px 80px 20px rgba(0,0,0,0.1);">
+                     <img src="{{ doctor.profile_photo.url }}"  class="img-fluid" width="460" height="500" loading="lazy" alt="{{ doctor.get_full_name }}" class="img-cover">
+                 </div>
+                 <h3 class="h3">
+                     <a href="{% url 'doctors:doctor-profile' doctor.username %}" class="card-title">Dr. {{ doctor.get_full_name }}</a>
+                 </h3>
+                 <p class="card-subtitle">{{ doctor.profile.specialization }}</p>
+                 <p class="card-subtitle">{{ doctor.email }}</p>
+                 <p class="card-subtitle">{{ doctor.mobile_number }}</p>
+                 <ul class="card-social-list">
+                     <li>
+                         <a href="{% url 'bookings:doctor-booking-view' doctor.username %}" class="card-social-link">
+                             <ion-icon name="logo-facebook"></ion-icon>
+                         </a>
+                     </li>
+                     <li>
+                         <a href="#" class="card-social-link">
+                             <ion-icon name="logo-twitter"></ion-icon>
+                         </a>
+                     </li>
+                     <li>
+                         <a href="#" class="card-social-link">
+                             <ion-icon name="logo-instagram"></ion-icon>
+                         </a>
+                     </li>
+                 </ul>
+             </div>
+         </li>                   
+                 {% endfor %}
+                
+         <!-- /Doctor Widget -->
         </ul>
     </div>
 </section>

@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
-from .forms import UserProfileUpdateForm, RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, \
+from urllib import request
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import UserProfileUpdateForm, User_ProfileUpdateForm, RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, \
     UserPasswordChangeForm
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.auth import logout
@@ -11,6 +12,12 @@ from Clinic.models import Specialization
 from Appointment.models import Appointment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from utils.htmx import render_toast_message_for_api
+from Dashboard.models import DoctorReg
+from bookings.models import Booking
+from django.db.models import Q
+from django.urls import reverse_lazy
+from mixins.custom_mixins import PatientRequiredMixin
+from django.views.generic import UpdateView
 
 # Create your views here.
 
@@ -24,7 +31,7 @@ def register(request):
         if form.is_valid():
             form.save()
             print("Account created successfully!")
-            return redirect('/accounts/login/')
+            return redirect('/Accounts/login/')
         else:
             print("Registration failed!")
     else:
@@ -56,7 +63,7 @@ class UserPasswordChangeView(PasswordChangeView):
 
 def user_logout_view(request):
     logout(request)
-    return redirect('/accounts/login/')
+    return render(request, 'accounts/includes/logged_out.html')
 
 
 def user_profile_view(request):
@@ -75,20 +82,35 @@ def user_profile_view(request):
     return render(request, 'user_profile/includes/user_profile.html', context)
 
 
-from django.db.models import Q
 
+@login_required(login_url='/Accounts/login')
 def user_profile(request):
     user_view = request.user
     page = Page.objects.all()
     services = Specialization.objects.all()
+    doctor = User.objects.filter(email=user_view,role=User.RoleChoices.DOCTOR)
     
     # Get appointments based on user type
     if user_view.is_staff:
-        appointments = Appointment.objects.all()
+        appointments = (Appointment.objects
+        .select_related("appointee", "doctor_id")
+        .filter(status="0"))
+        Bookings = Booking.objects.all()
+        doctors = DoctorReg.objects.all() 
+        context = {
+        'user_view': doctor,
+        'appointments': appointments,
+        'doctors':doctors,
+        'bookings':Bookings,
+    } 
+        
+        return render(request, 'bookings/booking.html', context)
+
     else:
         appointments = Appointment.objects.filter(
             Q(email=user_view.email) | 
-            Q(mobile_number=user_view.mobile_number)
+            Q(mobile_number=user_view.mobile_number) |
+            Q(fullname=user_view.get_full_name)
         ).order_by('-created_at')
     
     context = {
@@ -96,62 +118,30 @@ def user_profile(request):
         'page': page,
         'services': services,
         'appointments': appointments,
+        'doctor':doctor,
     }
     
     if appointments.exists():
-        messages.info(request, 'Your Appointment History')
         return render(request, 'dashboard/includes/profile.html', context)
     else:
         messages.info(request, 'No Appointment History Found')
         return render(request, 'user_profile/includes/profile.html', context)
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def profile_Update(request):
-    member_profile = User.objects.all()
+    page = Page.objects.all()
+    patient = get_object_or_404(User, username=request.user.username, role=User.RoleChoices.PATIENT)
+    
     form = UserProfileUpdateForm()
-    if request.method == 'POST':
-        profile_photo = member_profile.profile_photo
-        first_name = member_profile.first_name
-        second_name = member_profile.last_name
-        specialization = member_profile.specialization
-        is_Doctor = member_profile.is_Doctor
-        next_of_kin = member_profile.next_of_kin
-        has_next_of_kin = member_profile.has_next_of_kin
-        is_Member_Patient = member_profile.is_Member_Patient
-        email = member_profile.email
-        username = member_profile.username
-        patient_type = member_profile.patient_type
-        patient_id = member_profile.patient_id
-        member_code = member_profile.member_code
-        gender = member_profile.gender
-        mobile_number = member_profile.mobile_number
-        registered = member_profile.registered
-
-        member_profile.profile_photo = profile_photo
-        member_profile.first_name = first_name
-        member_profile.second_name = second_name
-        member_profile.specialization = specialization
-        member_profile.registered = registered
-        member_profile.mobile_number = mobile_number
-        member_profile.member_code = member_code
-        member_profile.gender = gender
-        member_profile.patient_type = patient_type
-        member_profile.patient_id = patient_id
-        member_profile.is_Doctor = is_Doctor
-        member_profile.next_of_kin = next_of_kin
-        member_profile.has_next_of_kin = has_next_of_kin
-        member_profile.is_Member_Patient = is_Member_Patient
-        member_profile.email = email
-        member_profile.username = username
-        member_profile.save()
-        return render(request, 'user_profile/includes/profile.html')
-
-    return render(request, 'user_profile/includes/user_profile_update.html', {'form': form})
+    form_2 = User_ProfileUpdateForm()
+    return render(request, 'user_profile/includes/user_profile_update.html', {'form': form, 'form_1':form_2,'page': page,'patient':patient,} )
 
 
-@login_required(login_url='/accounts/login')
-class UpdateBasicUserInformationAPIView(LoginRequiredMixin, UserPassesTestMixin):
+@login_required(login_url='/Accounts/login')
+class UpdateBasicUserInformationAPIView(UserPassesTestMixin):
+    template_name = 'user_profile/user_profile-update.html'
+    form_class = UserProfileUpdateForm
 
 
     def get_object(self):
@@ -184,3 +174,53 @@ class UpdateBasicUserInformationAPIView(LoginRequiredMixin, UserPassesTestMixin)
             )
         except Exception as e:
             return render_toast_message_for_api("Error", str(e), "error")
+
+class PatientProfileUpdateView(PatientRequiredMixin, UpdateView):
+    model = User
+    template_name = "user_profile/includes/use_profile_update.html"
+    success_url = reverse_lazy("user_profile")
+    form_class = UserProfileUpdateForm
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        profile = user.profile
+
+        # Handle profile image upload
+        if self.request.FILES.get("avatar"):
+            profile.image = self.request.FILES["avatar"]
+
+        # Update profile fields
+        profile_fields = [
+            "blood_group",
+            "gender",
+            "medical_conditions",
+            "allergies",
+            "address",
+            "city",
+            "state",
+            "postal_code",
+            "country",
+        ]
+
+        for field in profile_fields:
+            value = self.request.POST.get(field)
+            if value:
+                setattr(profile, field, value)
+
+        # Save both user and profile
+        user.save()
+        profile.save()
+
+        messages.success(self.request, "Profile updated successfully")
+        return redirect(self.success_url)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the errors below")
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context

@@ -10,11 +10,15 @@ from Dashboard.models import DoctorReg
 from Accounts.models import User
 from django.core.mail import send_mail
 from .utils import send_sms,send_sms_via_email
+from django.template.loader import render_to_string
 import africastalking
 from datetime import datetime
+from bookings.models import Booking
+from django.http import HttpResponse
+from django.views.generic import UpdateView, DetailView, View, CreateView
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def User_Search_Appointments(request):
     page = Page.objects.all()
     MemberUser = request.user
@@ -23,25 +27,26 @@ def User_Search_Appointments(request):
         query = request.GET.get('query', '')
         if query:
             # Filter records where fullname or Appointment Number contains the query
-            patient = Appointment.objects.filter(fullname__icontains=query) | Appointment.objects.filter(appointment_number__icontains=query)
+            patient = Appointment.objects.filter(fullname__icontains=MemberUser) | Appointment.objects.filter(appointment_number__icontains=query)
             if patient:
                 Appointment_History = Appointment.objects.filter(
-                    email__icontains=MemberUser) | Appointment.objects.filter(
-                    mobile_number__icontains=MemberUser)
+                    email__icontains=MemberUser
+                    ) | Appointment.objects.filter(
+                    appointment_number__icontains=patient)
                 messages.info(request, "Search against " + query)
                 context = {'patient': Appointment_History, 'query': query, 'page': page}
-                return render(request, 'appointment/search-appointment.html', context)
+                return render(request, 'appointment/includes/view_appointment.html', context)
             else:
-                print("No Record Found")
+                messages.info(request, "No records found matching " + query)
                 context = {'page': page}
-                return render(request, 'appointment/userbase.html', context)
+                return render(request, 'appointment/search-appointment.html', context)
 
         # If the request method is not GET
-        context = {'page': page}
-        return render(request, 'appointment/userbase.html', context)
+       
+        return render(request, 'appointment/search-appointment.html')
 
 
-@login_required(login_url='/accounts/login')
+@login_required(login_url='/Accounts/login')
 def user_profile_history_appointment(request):
     user_view = request.user
     page = Page.objects.all()
@@ -69,7 +74,7 @@ def View_Appointment_Details(request, id):
     return render(request, 'appointment/includes/user_appointment-details.html', context)
 
 
-@login_required(login_url='/')
+@login_required(login_url='/Accounts/login')
 def View_Appointment(request):
     try:
         doctor_reg = DoctorReg.objects.get(admin=request.user)
@@ -105,9 +110,10 @@ def AppointmentHistoryList(request, id):
 
 
 def create_appointment(request):
-    doctorview = (User.objects.select_related("profile")
+    doctorview = (User.objects
+        .select_related("profile", "doctorreg")
         .filter(role="doctor")
-        .filter(is_superuser=True))
+        .filter(is_superuser=False))
     worry = Specialization.objects.all()
     page = Page.objects.all()
 
@@ -123,7 +129,7 @@ def create_appointment(request):
         additional_msg = request.POST.get('additional_msg')
 
         # Retrieve the DoctorReg and Specialization instances
-        doc_instance = DoctorReg.objects.get(id=doctor_id)
+        doc_instance = DoctorReg.objects.get(member=doctor_id)
         worry_instance = Specialization.objects.get(id=worry_id)
 
         # Validate the appointment date
@@ -227,3 +233,48 @@ def appointment_success(request, appointment_number):
     context = {'appointment': appointment}  # Add more context data as needed 
       
     return render(request, 'accounts/includes/appointment_success.html', context)
+
+
+class AppointmentCancelView(View):
+    def post(self, request, pk):
+        appointment = get_object_or_404(
+            Booking,
+            pk=pk,
+            patient=request.user,
+            status__in=["pending", "confirmed"],
+        )
+
+        appointment.status = "cancelled"
+        appointment.save()
+
+        messages.success(request, "Appointment cancelled successfully")
+        return redirect("patients:dashboard")
+
+
+class AppointmentPrintView(DetailView):
+    model = Booking
+    template_name = "user_profile/includes/profile.html"
+    context_object_name = "appointment"
+
+    def get_queryset(self):
+        return Booking.objects.select_related(
+            "doctor", "doctor__profile", "patient", "patient__profile"
+        ).filter(patient=self.request.user)
+
+    def render_to_response(self, context):
+        html_string = render_to_string(
+            self.template_name, context, request=self.request
+        )
+        return HttpResponse(html_string)
+
+
+
+class AppointmentDetailView(DetailView):
+    model = Booking
+    template_name = "user_profile/includes/profile.html"
+    context_object_name = "appointment"
+
+    def get_queryset(self):
+        return Booking.objects.select_related(
+            "doctor", "doctor__profile", "patient", "patient__profile"
+        ).filter(patient=self.request.user)

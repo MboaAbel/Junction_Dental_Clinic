@@ -1,6 +1,7 @@
 from django.db import models
 import string
 import random
+import uuid
 
 
 def generate_service_id():
@@ -36,13 +37,15 @@ class Page(models.Model):
         return self.pagetitle
 
 class Blog(models.Model):
-    blog_code = models.CharField(default=generate_service_id, null=True, max_length=6, )
+    soshi_user = models.CharField(max_length=100)
+    blog_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     blog_title = models.CharField(max_length=250)
     blog_subtitle = models.CharField(max_length=250)
+    caption = models.CharField(max_length=3000,editable=True)
     blog_image = models.ImageField(upload_to='profile_photos/', null=False, default='icon/bondijunction_dentalclinic_logo-300x258.jpg', blank=False)
-    blog_member = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.blog_title
+        return f'{self.blog_id}'
+    

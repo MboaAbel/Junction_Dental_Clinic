@@ -1,28 +1,28 @@
-{% extends 'dashboard/base.html' %}
-
-{% block content %}
-
-
-<div class="min-height-300 bg-primary position-absolute w-100">
-    {% include 'accounts/includes/navigation-fullscreen.html' %}
+{% extends 'accounts/base-fullscreen.html' %}
+{% load static %}
+{% load account %}
+ 
   
+{% block content %}
+{% block overlay %}
+
+  <div class="min-height-300 bg-gradient-primary position-absolute mb-8 w-100">
+    
   </div>
-<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-8">
-        <h1 class="display-3 text-white mb-3 animated slideInDown">{{app_word}}  Appointment</h1>
+{% endblock overlay %}
+<div class="container-fluid page-header py-6 mb-2 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-4">
+        <h1 class="display-3 text-white mb-2 animated slideInDown">{{app_word}}  Appointment</h1>
     </div>
 </div>
 <!-- Page Header End -->
 
 <!-- Appointment Start -->
 <div class="container-xxl py-1">
-    <div class="container">
     <div class="row">
     <div class="col-sm-20">
     <div class="card card- table">
     <div class="card-body">
-
-
 
     <div class="table-responsive">
     <table class="table table-hover table-center mb-0 datatable">
@@ -30,12 +30,13 @@
     <tr>
    
     <th>No.</th>
+    <th class="text-right">Action</th>
     <th>Patient Name</th>
-    <th>Date of Appointment</th>
-    <th>Time of Appointment</th>
+    <th>Date </th>
+    <th>Time </th>
     <th>Creation Date</th>
     <th>Status</th>
-    <th class="text-right">Action</th>
+    
     </tr>
     </thead>
     <tbody>
@@ -43,6 +44,14 @@
     <tr>
 
     <td>{{i.appointment_number}}</td>
+    <td class="text-right">
+        <div class="actions">
+        <a href="{% url 'patient_appointment_details' i.id i.appointment_number %}">
+        <i class="btn btn-primary btn-block">View</i>
+        </a>
+      
+        </div>
+        </td>
     <td>{{i.fullname}}</td>
     <td>{{i.date_of_appointment}}</td>
     <td>{{i.time_of_appointment}}</td>
@@ -51,14 +60,7 @@
                                                 <td>Not Updated Yet</td>
                                                 {% else %}
                                                 <td>{{ i.status}}</td>{% endif %}
-    <td class="text-right">
-    <div class="actions">
-    <a href="{% url 'patientappointmentdetails' i.id %}">
-    <i class="btn btn-primary btn-block">View</i>
-    </a>
-  
-    </div>
-    </td>
+    
     </tr> {% endfor %}
    
     </tbody>
