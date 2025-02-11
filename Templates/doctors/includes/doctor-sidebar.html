@@ -80,8 +80,10 @@
                 </div>
             </div>
         </div>
-   
+<div class="ms-4 w-70">   
     {% include 'clinic/includes/messages.html' %}
+
+</div>
 </div>
     <!-- /Breadcrumb -->
 
@@ -112,11 +114,10 @@
                         <div class="dashboard-widget">
                             <nav class="dashboard-menu">
                                 <ul>
-
                                     <li class="{% if request.resolver_match.url_name == 'my-patients' %}active{% endif %}  btn btn-block apt-btn btn-outline-primary bg-success-light">
                                         <a href="{% url 'doctors:my-patients' %}">
                                             <i class="fas fa-user-injured"></i>
-                                            <span>Patients</span>
+                                            <span>History</span>
                                         </a>
                                     </li>
                                     <li class="{% if request.resolver_match.url_name == 'schedule-timings' %}active{% endif %}  view-pro-btn btn btn-block">

@@ -30,7 +30,7 @@
               </h5>
               {% if user.mobile_number%}
               <p class="mb-0 font-weight-bold text-sm">
-                {{user.mobile_number}}
+            Phone No.    {{user.mobile_number}}
               </p>
               {% endif %}
             </div>
@@ -42,7 +42,7 @@
                 <li class="nav-item">
                   <a href="{% url 'user_profile_update' %}" class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center " role="tab" aria-selected="true">
                     <i class="ni ni-app"></i>
-                    <span class="ms-2">Edit</span>
+                    <span class="ms-2">Studio</span>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -92,8 +92,8 @@
                                            
     {% else %}
     {% for appointment in appointments %}
-    <div class="col-12 col-md-6 col-xl-4 mb-4">
-        <div class="card appointment-card">
+    <div class="col-12 col-md-6 col-xl-4 mb-2">
+      	  <div class="card appointment-card">
             <div class="card-body">
               <div class="d-flex justify-content-between">
                   <a href="{% url 'patient_appointment_details' appointment.id  appointment.appointment_number %}">
@@ -137,166 +137,67 @@
         </div>
     </div>
     {% endfor %}
-    {% endif %}
-    
-
-
-
-                
-              </div></div>
-            
-
-
-
-
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="d-flex align-items-center">
-                <button class="btn btn-primary btn-sm ms-auto"> <a href="{% url 'user_profile_update' %}">Update</a></button>
-              </div>
-            </div>
-            <div class="card-body">
-              <p class="text-uppercase text-sm">Personal Information</p>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="username" class="form-control-label">Username</label>
-                    <input id="username" class="form-control" type="text" value="{{user_view.username}}">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="email" class="form-control-label">Email address</label>
-                    <input id="email" class="form-control" type="email" value="{{user.email}}">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="first_name" class="form-control-label">First name</label>
-                    <input id="first_name" class="form-control" type="text" value="{{user.first_name}}">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="last_name" class="form-control-label">Last name</label>
-                    <input id="last_name" class="form-control" type="text" value="{{user_view.last_name}}">
-                  </div>
-                </div>
-              </div>
-              <hr class="horizontal dark">
-              <p class="text-uppercase text-sm">Contact Information</p>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="address" class="form-control-label">Address</label>
-                    <input id="address" class="form-control" type="text" value="{{user.profile.address}}">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="city" class="form-control-label">City</label>
-                    <input id="city" class="form-control" type="text" value="Nairobi">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="country" class="form-control-label">Country</label>
-                    <input id="country" class="form-control" type="text" value="Kenya">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="mobile_number" class="form-control-label">Phone Number</label>
-                    <input id="mobile_number" class="form-control" type="text" value="{{user.mobile_number}}">
-                  </div>
-                </div>
-              </div>
-              <hr class="horizontal dark">
-               
-            </div>
+    {% endif %} 
           </div>
-        </div>
-        <div class="col-md-4" style="margin-top: 10vh;">
-          <div class="card card-profile">
-            <img src="{% static 'user_profile/images/hero-bg.jpg' %}" alt="Image placeholder" class="card-img-top">
-            <div class="row justify-content-center">
-              <div class="col-4 col-lg-4 order-lg-2">
-                <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
-                  <a href="javascript:;">
-                    <img src="{{ user.profile_photo.url}}" class="rounded-circle img-fluid border border-1 border-none">
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="container-fluid py-4">
-              <!-- Profile Header -->
-              <div class="row">
-                  <div class="col-12">
-                      <div class="card card-profile">
-                          <div class="row justify-content-center">
-                              <div class="col-4 col-lg-4 order-lg-2">
-                                  <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
-                                  
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="card-body pt-0">
-                              <div class="text-center mt-4">
-                            {% for i in page %}
-                                  <h5>{{ i.pagetitle }} </h5>
-                                  <h5>{{ i.email }}</h5>
-                                  <h6>0{{ i.mobilenumber}} </h6>
-                                  <div class="h6 font-weight-300">
-                                      <i class="ni location_pin mr-2"></i>{{ page.mobilenumber }}
-                                
-                                    </div>
-                                    {% endfor %}
 
-                                   
-                                          
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          
+
+
+
+
+ 
               <!-- Appointment Stats -->
             
+    <div class="col-lg-5">
+      <div class="card card-carousel overflow-hidden h-100 p-0">
+        <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
+          <div class="carousel-inner border-radius-lg h-100">
+            <div class="carousel-item h-100 active" style="background-image: url('{% static 'clinic/images/smile_hero.j>
+  background-size: cover;">
+              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                  <i class="ni ni-camera-compact text-dark opacity-10"></i>
+                </div>
+                <h5 class="text-white mb-1">Get the latest dental trends</h5>
+                <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
+              </div>
+            </div>
+            <div class="carousel-item h-100" style="background-image: url('{% static 'clinic/images/teeth_cleaning.jpg'>
+  background-size: cover;">
+              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
+                </div>
+                <h5 class="text-white mb-1">How to fix a jaw</h5>
+                <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</>
+              </div>
+            </div>
+            <div class="carousel-item h-100" style="background-image: url('{% static 'clinic/images/fix-braces.jpg' %}'>
+  background-size: cover;">
+              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                  <i class="ni ni-trophy text-dark opacity-10"></i>
+                </div>
+                <h5 class="text-white mb-1">Share with us your design tips!</h5>
+                <p>Don’t be afraid to be wrong because you can’t learn anything from a compliment.</p>
+              </div>
+            </div>
           </div>
+          <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-b>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-b>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
           {% include "accounts/includes/scripts.html" %}
 
 
           
-          {% block javascripts %}
-          <script src="{% static 'dashboard/js/soft-ui-dashboard.js' %}"></script>
-          <script>
-              $(document).ready(function() {
-                  // Initialize tooltips
-                  $('[data-toggle="tooltip"]').tooltip();
-                  
-                  // Filter appointments
-                  $('.filter-btn').on('click', function() {
-                      const status = $(this).data('status');
-                      $('.appointment-card').each(function() {
-                          const cardStatus = $(this).find('.status-badge').text().trim().toLowerCase();
-                          $(this).toggle(status === 'all' || cardStatus === status);
-                      });
-                  });
-              });
-          </script>
-          {% endblock javascripts %}
-            <div class="card-body pt-0">
-              <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
-                <div class="d-flex justify-content-between">
-                  <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Call Now</a>
-                  <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-block d-lg-none"><i class="ni  ni-mobile-button"></i></a>
-                  <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Message</a>
-                  <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none"><i class="ni ni-chat-round"></i></a>
-                </div>
-              </div>
-            </div>
 
+          <script src="{% static 'dashboard/js/soft-ui-dashboard.js' %}"></script>
   {% endblock content %}

@@ -1,9 +1,8 @@
 {% extends 'user_profile/base.html' %}
 {% block content %}
 {% load static %}
-               {% include 'clinic/includes/messages.html' %}
-  <div style="margin-top:2vh;" class="  form-container hero-form-wrapper">
-        <h1>So excited to know about you?</h1>
+     <div style="margin-top:2vh;" class="  form-container hero-form-wrapper">
+        <h1>So excited to restore that smile? <br>Kindly tell as about you.</h1>
       <form  action="{% url 'appointment' %}" class="hero-form" method="POST">
           {% csrf_token %}
         <div class="form-group">

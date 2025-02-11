@@ -22,7 +22,7 @@
 
     <main>
     <article class="article">
-
+				
     <section class="section hero" aria-label="hero">
         <div class="container">
 
@@ -36,16 +36,16 @@
 
               <p class="hero-text">
              A Smile is the Best outfit.<br>Our Priority </p>
+<a class="btn btn-secondary"  href="{% url 'appointment' %}">
+Book Appointment Now </a>
 
-            </div>
-          </div>
+            </div>          </div>
 
           <div class="hero-form-wrapper">
             <div class="form-tab">
 
-              <button class="tab-btn" data-tab-btn><a href="{% url 'user_profile_view' %}">Services</a></button>
+              <button class="tab-btn" data-tab-btn><a href="{% url 'user_profile_view' %}">Studio</a></button>
               <button class="tab-btn" data-tab-btn><a href="{% url 'user_profile' %}">Profile</a></button>
-              <button class="tab-btn" data-tab-btn>Blog</button>
               <button class="tab-btn" data-tab-btn>Shop</button>
               
 
@@ -76,18 +76,7 @@
  {% block content %}
     {% endblock content %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <a href="https://wa.me/254708534184?text=Hello!%20Junction%20Dental%20would%20like%20to%20inquire%20about%20your%20dental%20services.%20Can%20you%20please%20assist%20me?" style="position:fixed;
-    width:60px;
-    height:60px;
-    bottom:20px;
-    left:5px;
-    background-color:#25d366;
-    color:#FFF;
-    border-radius:50px;
-    text-align:center;
-    font-size:30px;
-    box-shadow: 2px 2px 3px #999;
-    z-index:100;" class="float" target="_blank">
+    <a href="https://wa.me/254708534184?text=Hello!%20Junction%20Dental%20would%20like%20to%20inquire%20about%20your%20dental%20services.%20Can%20you%20please%20assist%20me?" style="position:fixed;width:60px;height:60px;bottom:20px;left:5px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 2px 2px 3px #999;z-index:100;" class="float" target="_blank">
     <i class="fa fa-whatsapp my-float" style="margin-top:16px;"></i>
     </a>
     <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
