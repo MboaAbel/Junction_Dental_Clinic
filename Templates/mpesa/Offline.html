@@ -1,0 +1,70 @@
+{% extends 'mpesa/mpesa-sidebar.html' %}
+
+{% load static %}
+{% load account %}
+
+{% block main %}
+<body>
+
+
+    <div class="col-md-12 col-lg-12 col-xl-9">
+        <div class="container-fluid py-4">
+            <div class="row"> <div class="col-md-8">
+                <div class="card"> <div class="card-header pb-0">
+          <div class="d-flex align-items-center">
+                      <button class="btn btn-primary bg-gradient-primary btn-sm ms-auto">Wallet</button>
+                    </div>
+                    <h4 class="card-title">Mpesa</h4>
+                  </div>
+       
+
+<div class="row align-items-center">
+                
+                                                                                                          <div class=" flex  bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 p>                 <p style=" border-color:transparent; background-color:#ffffff00; color:#001100;"><st>
+<form action="stk" method="POST" class="profile-update-form pb-4">
+            {% csrf_token %}
+
+   <div class="col-12">
+    <div class="card custom-form-card" id="basicInfoSection">
+<div class="card-body">
+       <div class="row ">
+   <!-- ...existing Booked by user Appointments fields... -->
+                     {% for field in form %}
+                     {% if field.name in 'phone_number,amount'|stringformat:'s'|slice:',' %}
+                         <div class="col-md-6">
+                             <div class="form-group custom-input-group">
+                                 <label class="form-label">{{ field.label }}
+                                      {% if field.field.required %}
+                                
+                                 {{ field }}
+                                 {% if field.errors %}
+                                     <div class="error-feedback">
+                                         {% for error in field.errors %}
+                                             {{ error }}
+                                         {% endfor %}
+                                     </div>
+                                
+              {% endif %} {% endif %}
+                             </div>
+                         </div>
+                     {% endif %}
+              
+            {% endfor %}
+   <div class="col-md-6">
+       <div class="form-group custom-input-group">
+ <button type="Submit" class="text-white btn bg-success">
+              Pay Now
+            </button>
+                 
+</div></div></div>
+
+  </form>
+           </div>
+
+</div>
+</div>
+</div>
+
+</body>
+   
+{% endblock %}

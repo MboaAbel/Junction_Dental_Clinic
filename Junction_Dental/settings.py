@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Accounts',
     'channels',
     'Clinic',
+    'mpesa',
     'ckeditor',
     'Appointment',
     'Dashboard',
@@ -253,9 +254,9 @@ SENDSMS_BACKEND = 'Junction_Dental.mysmsbackend.SmsBackend'
 # Email configuration
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Options: "none", "optional", "mandatory"
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"  # Options: "username", "email", "username_email"
+#ACCOUNT_AUTHENTICATION_METHOD = "username_email"  # Options: "username", "email", "username_email"
 ACCOUNT_USERNAME_REQUIRED = True
-
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 
 TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
@@ -274,3 +275,27 @@ BROWSER_RELOAD = False
 
 API_KEY = config('API_KEY')
 API_USERNAME = config('API_USERNAME')
+
+
+###############################=================M-PESA DARAJA APIS CREDENTIALS=================###############################
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+MPESA_SHORTCODE_TYPE = config('MPESA_SHORTCODE_TYPE')
+
+MPESA_SHORTCODE = config('MPESA_SHORTCODE')
+MY_MPESA_TILL_NUMBER = config('MY_MPESA_TILL_NUMBER')
+MPESA_PASSKEY = config('MPESA_PASSKEY')
+MPESA_INITIATOR_USERNAME = config('MPESA_INITIATOR_USERNAME')
+MPESA_INITIATOR_SECURITY_CREDENTIAL = config('MPESA_INITIATOR_SECURITY_CREDENTIAL')
+LNM_PHONE_NUMBER = config('LNM_PHONE_NUMBER')
+MPESA_EXPRESS_SHORTCODE = config('MPESA_EXPRESS_SHORTCODE')
+
+
+AT_YOUR_USERNAME = config('AT_YOUR_USERNAME')
+AT_YOUR_API_KEY = config('AT_YOUR_API_KEY')
+
+STRIPE_PUBLIC_KEY = config('STRIPE_LIVE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = config('STRIPE_LIVE_SECRET_KEY')
+
+
+USE_THOUSAND_SEPARATOR = False

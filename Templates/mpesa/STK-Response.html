@@ -1,0 +1,26 @@
+{% extends 'mpesa/mpesa-sidebar.html' %}
+{% block main %}
+{%load static%}
+
+
+<div class="mb-5 home-section align-items-center" style="color:#000;font-weight:bold; font-family:Comic Sans Mn;background-color:rgba(0,0,0,0.2);
+        opacity:90%; border-radius:36px;backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,0.2);z-index:10;display:flex;box-shadow:40px 40px 40px 80px rgba(0,0,0,0.3);" id="home">
+            <div class="container">
+               <div class="row align-items-center">
+                  <div class="about-img ">
+                   
+                    </p><h2  style="color:#001100; font-weight:bold;font-family:Comic Sans Ms;"> <br>
+                   Dear {{ user.first_name}},<br> Complete the mpesa transaction on the prompt notification send to your number   <b style="font-weight:bold;color:red;"> {{ user.mobile_number }}
+                  <br>
+                </h2>
+                    <a  style="color:#001100;margin-top:2px; border:1px solid;width:100%;" href="/setting"  class="btn">Check Account Balance</a>  </a>
+</div>
+                         <div class="about-text ">
+                             
+                           <div class="timeline-item">
+<h2 class="btn btn-primary" style="font-weight:bold;"> Transaction Tracking </h2>
+            
+            </div>
+                              </div></div></div></div></div></div>
+
+     {% endblock %}
