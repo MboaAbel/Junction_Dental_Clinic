@@ -32,7 +32,7 @@ class PaymentForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': (
                     'form-group '),
-                'value':field,
+                'placeholder':field,
                 'style': (
                     'width:98%;'
                     'border-radius: 8px;'

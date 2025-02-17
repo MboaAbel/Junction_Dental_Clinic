@@ -105,14 +105,7 @@
                                                     <a href="{% url 'doctors:doctor-profile' doctor.username %}">Dr. {{ doctor.get_full_name }}</a>
                                                 </h4>
                                                 <p class="doc-speciality">{{ doctor.profile.specialization }}</p>
-                                                <!-- <div class="rating">
-                                                    <i class="fas fa-star {% if doctor.rating >= 1 %}filled{% endif %}"></i>
-                                                    <i class="fas fa-star {% if doctor.rating >= 2 %}filled{% endif %}"></i>
-                                                    <i class="fas fa-star {% if doctor.rating >= 3 %}filled{% endif %}"></i>
-                                                    <i class="fas fa-star {% if doctor.rating >= 4 %}filled{% endif %}"></i>
-                                                    <i class="fas fa-star {% if doctor.rating >= 5 %}filled{% endif %}"></i>
-                                                    <span class="d-inline-block average-rating">({{ doctor.reviews_count|default:0 }})</span>
-                                                </div> -->
+                                             
                                                 <div class="clinic-services">
                                                     <span>{{ doctor.profile.specialization }}</span>
                                                 </div>

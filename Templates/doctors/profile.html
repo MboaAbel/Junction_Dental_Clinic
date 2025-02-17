@@ -20,7 +20,7 @@
                     <div class="doctor-widget">
                         <div class="doc-info-left">
                             <div class="doctor-img mb-4">
-                                <img src="{{ doctor.profile_photo.url }}"  width="150" height="150" style="border-radius: 50%;" class="img-fluid" alt="{{ doctor.get_full_name }}">
+                                <img src="{{ doctor.profile_photo.url }}"  width="150" height="150" style="border-radius:20px;" class="img-fluid" alt="{{ doctor.get_full_name }}">
                             </div>
                             <div class="doc-info-cont">
                                 <h4 class="doc-name">Dr. {{ doctor.get_full_name }}</h4>
@@ -39,7 +39,7 @@
                                     {% if doctor.profile.city or doctor.profile.state %}
                                         <li>
                                             <i class="fas fa-map-marker-alt"></i> 
-                                            {{ doctor.profile.city }}{% if doctor.profile.state %}, {{ doctor.profile.state }}{% endif %}
+                                            {{ doctor.profile.city }}{% if doctor.profile.state %} {{ doctor.profile.state }}{% endif %}
                                         </li>
                                     {% endif %}
                                     {% if doctor.profile.price_per_consultation %}
@@ -54,7 +54,7 @@
                                 </ul>
                             </div>
 
-                            {% if doctor.email == request.user %}
+                            {% if doctor.email == request.user.email %}
                             <div class="clinic-booking">
                                 <a class=" btn btn-block apt-btn btn-outline-primary bg-success-light " href="{% url 'bookings:doctor-booking-view' doctor.username %}">View Appointments Booked</a>
                             </div>

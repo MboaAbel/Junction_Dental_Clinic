@@ -17,12 +17,12 @@
                         <thead>
                             <tr>
                                 <th>Patient</th>
-                                <th>Age</th>
-                                <th>Gender</th>
-                                <th>Blood Group</th>
+				<th>Name </th>
+            			<th>Update</th>
+                                <th>Email</th>
                                 <th>Phone</th>
                                 <th>Last Visit</th>
-                                <th>Paid</th>
+                                <th>Visits</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -30,26 +30,23 @@
                             {% for patient in patients %}
                             <tr>
                                 <td>
-                                    <h2 class="table-avatar">
-                                        <a href="#" class="avatar avatar-sm mr-2">
-                                            <img class="avatar-img rounded-circle" src="{{ patient.profile_photo.url }}" alt="User Image">
+                                    <h2 class="table-avatar text-blue">
+                                        <a href="#" class="ms-2 avatar avatar-sm mr-2">
+                                            <img class="avatar-img rounded-circle" src="{{ patient.profile_photo.url }}" alt="User Image">     
+</a>
+                           
+                                   </h2> 
+                                </td>
+				<td>{{patient.patient_appointment }}  {{ patient.get_full_name }}</td>
+<td><a href="{% url 'doctors:appointment-history' patient.id %}" class="btn text-white btn-sm bg-success">
+                                            <i class="fas fa-history"></i> Update
                                         </a>
-                                    </h2>
-                                        <a href="#"  class="navbar-brand font-weight-bolder ms-lg-0 ms-2 "> {{ patient.get_full_name }}</a>
-                                    
+
                                 </td>
-                                <td>
-                                    {% if patient.profile.dob %}
-                                        {{ patient.profile.dob|timesince|split:" "|first }} years
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td>{{ patient.profile.gender|title|default:"N/A" }}</td>
-                                <td>{{ patient.profile.blood_group|default:"N/A" }}</td>
+                                <td>{{ patient.email|default:"N/A" }}</td>
                                 <td>{{ patient.mobile_number|default:"N/A" }}</td>
                                 <td>
-                                    {% with last_visit=patient.patient_appointments.filter.first %}
+                     {% with last_visit=patient.patient_appointments.filter.first %}
                                         {% if last_visit %}
                                             {{ last_visit.appointment_date }}
                                         {% else %}
@@ -64,17 +61,10 @@
                                     {% endwith %}
                                 </td>
                                 <td>
-                                    <div class="btn-group">
-                                        
-                                        <a class="btn btn-sm bg-info-light mr-1" href="{% url 'doctor_appointment_list'  patient.id %}">
+                                    
+                                        <a class="mr-1" href="{% url 'doctor_appointment_list'  patient.id %}">
                                             <i class="btn btn-primary btn-block">View</i>
                                             </a>
-                                          
-                                        
-                                        <a href="{% url 'doctors:appointment-history' patient.id %}" class="btn btn-sm bg-primary-light">
-                                            <i class="fas fa-history"></i> History
-                                        </a>
-                                    </div>
                                 </td>
                             </tr>
 

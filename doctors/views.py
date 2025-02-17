@@ -601,7 +601,7 @@ class MyPatientsView(DoctorRequiredMixin, ListView):
 
 class AppointmentHistoryView(DoctorRequiredMixin, ListView):
     model = Booking
-    template_name = "doctors/appointment-history.html"
+    template_name = "doctors/add_prescription.html"
     context_object_name = "appointments"
 
     def get_queryset(self):

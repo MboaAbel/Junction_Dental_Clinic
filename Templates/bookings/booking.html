@@ -16,27 +16,41 @@
             <div class="row">
                 <div class="col-12">
                     <!-- Doctor Info -->
-                    <div class="container-fluid px-4 py-4 mt-6">
-                   {% for doctors in  doctors %}
-                   <div class="col-12 col-md-6 col-xl-4 mb-4">
+
+                    <div class="container-fluid px-4 py-2 mt-2">
+                       <div class="row mt-4">
+ {% for doctors in  doctors %}
+             <div class="col-12 col-md-8 col-xl-4 mb-4">
                         <div class="card appointment-card" style="background-image: url('{{ doctors.member.profile_photo.url }}');background-position:center; background-image:cover;">
-                             <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                         <a href="{% url 'doctors:doctor-profile' user.username %}" class="booking-doc-img">
-                                                           <img src="" alt="{{ doctor.email }}">
-                                                 </a>
-                                            
-                                                <div class="booking-info">
-                                    <h4><a href="{% url 'doctors:doctor-profile' doctors.member.username %}">Dr. {{doctors.member.get_full_name}}</a></h4>
-                                                   </div>
-                                         </div>  {{doctors.clinic_name}}
-                                                   {{doctors.clinic_code}}
-                            
-                        </div>
+                             
+<div class="card-body">
+ <span class="badge bg-success">Available</span>
+			    <div class="d-flex justify-content-between">
+                                  
+        <h4>
+<a class="text-success" href="{% url 'doctors:doctor-profile' doctors.member.username %}">
+{{doctors.member.username}}</a>
+         
+</div>
+
+ <div class="timeline-item mt-4">
+                                <p class="text-md text-white  mb-1">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    {{doctors.clinic_name}}</p>
+                                <p class="text-sm text-primary mb-1">
+                                    <i class="fas fa-user-md me-2"></i>
+                                    {{doctors.clinic_code }}
+                                </p>
+
+              <a href="/" class="badge btn btn-block apt-btn btn-outline-primary bg-success-light ">
+                       Queue... </a>
+                            </div>            
                     </div>
                     </div>
             
-                    {% endfor %}  
+            </div>
+</div>        {% endfor %}  </div>
+</div>
                     <!-- /Doctor Info -->
 
 
@@ -57,7 +71,7 @@
                               <h6 class="mt-1 mb-0">JDC-{{ bookings.appointment_ok }}</h6>
                                </a>
                             {% if bookings.appointment_ok.status == 'Pending' %}
-                                <span class="badge btn btn-block apt-btn btn-outline-primary bg-success-light ">Pending</span>
+ <span class="badge btn btn-block apt-btn btn-outline-primary bg-success-light ">Pending</span>
                             {% elif bookings.appointment_ok.status == 'Approved' %}
                                 <span class=" badge bg-gradient-primary">Approved</span>
                             {% elif bookings.appointment_ok.status == 'Processing' %}

@@ -11,7 +11,7 @@ test_patterns = [
 
 urlpatterns = [
 	path('', views.index, name='index'),
-        #path('stk_callback/', views.mpesa_stk_callback, name='mpesa_stk_callback'),
+#        path('mpesa/stk_callback/', mpesa_stk_callback, name='mpesa_stk_callback'),
 	path('stk', views.stk, name='stk'),
 	path('stk-pay-bill', views.stk_paybill, name='stk-pay-bill'),
 	path('post-pay-bill', views.post_paybill, name='post-pay-bill'),
@@ -25,7 +25,7 @@ urlpatterns = [
 	path('b2c', views.b2c_payment, name='b2c_payment'),
 	path('QRCode', views.QRCode, name='QRCode'),
 	path('PayBill_QRCode', views.PayBill_QRCode, name='PayBill_QRCode'),
-	path('B2B', views.Business_2_Business_Express_Checkout, name='B2B_Express'),
+	#path('B2B', views.Business_2_Business_Express_Checkout, name='B2B_Express'),
 	path('Balance', views.Balance_till, name='Balance'),
 	path('BusinessPayment', views.BusinessPayment, name='BusinessPayment'),
 	path('Ni_Push', views.Ni_Push, name='Ni_Push'),
