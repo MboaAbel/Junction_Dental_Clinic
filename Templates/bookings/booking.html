@@ -20,8 +20,9 @@
                     <div class="container-fluid px-4 py-2 mt-2">
                        <div class="row mt-4">
  {% for doctors in  doctors %}
-             <div class="col-12 col-md-8 col-xl-4 mb-4">
-                        <div class="card appointment-card" style="background-image: url('{{ doctors.member.profile_photo.url }}');background-position:center; background-image:cover;">
+             <div class="col-12 col-md-8 col-xl-4 mb-4">  
+   <div class="card appointment-card" 
+style="background-image: url('{{ doctors.member.profile_photo.url }}');background-position:center; background-size:cover;">
                              
 <div class="card-body">
  <span class="badge bg-success">Available</span>
@@ -48,7 +49,7 @@
                     </div>
                     </div>
             
-            </div>
+            
 </div>        {% endfor %}  </div>
 </div>
                     <!-- /Doctor Info -->

@@ -117,11 +117,11 @@ class BookingView(DoctorRequiredMixin, View):
 class BookingCreateView(DoctorRequiredMixin, View):
     template_name = "bookings/booking.html"
     form_class = ReceptionBookingForm
-    
+
 
     def get(self, request: HttpRequest, *args, **kwargs):
         return render(request, self.template_name)
-   
+
     def post(self, request, username,appointment_no):
         doctor = get_object_or_404(
             User, username=username, role=User.RoleChoices.DOCTOR
@@ -159,8 +159,6 @@ class BookingCreateView(DoctorRequiredMixin, View):
             messages.error(request, "Invalid date or time format")
         except Exception as e:
             messages.error(request, str(e))
-            
-        
         return render(self.request, 'bookings/booking-form.html',{'form':form,'appointment_no':appointment_no})
 
         # return redirect("bookings:reception-booking-view", username=username,appointment_number=appointment_no)
@@ -168,13 +166,11 @@ class BookingCreateView(DoctorRequiredMixin, View):
 
 class BookingSuccessView(LoginRequiredMixin, TemplateView):
     template_name = "bookings/booking-success.html"
-    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["booking"] = Booking.objects.get(id=kwargs["booking_id"])
-        return context  
-    
+        return context
 
 
 class ReceptionBookingView(LoginRequiredMixin, TemplateView):
@@ -183,7 +179,7 @@ class ReceptionBookingView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self,  **kwargs):
         context = super().get_context_data()
-        context["who-Scheduled"] = Booking.objects.get(nerd=kwargs["username"],)
+        #context["who-Scheduled"] = Booking.objects.get(nerd=kwargs["username"],)
         return context
 
 
