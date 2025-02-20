@@ -29,7 +29,7 @@ class mpesa_transactions(models.Model):
 	occassion = models.CharField(max_length=30)
 	is_finished = models.BooleanField(default=False)
 	is_successful = models.BooleanField(default=False)
-	timestamp = models.IntegerField( )
+	timestamp = models.IntegerField(null=True)
 	trans_id = models.CharField(max_length=30)
 
 	class Meta:

@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from mpesa.core import MpesaClient
 from mpesa.utils import mpesa_config
 from django.shortcuts import render
-
+from mpesa.models import mpesa_transactions
 from mpesa.forms import PaymentForm
 
 cl = MpesaClient()
@@ -93,11 +93,9 @@ def stk(request):
             transaction = mpesa_transactions.objects.create(
             phone_number=phone_number,
             amount=amount,
-            status="Pending",
+            trans_id=phone_number,
             transaction_desc="Awaiting status result",
         )
-            transaction.transaction_id = transaction_id
-            transaction.description = response.get('transaction_desc')
             context = {'response':response}
             return render(request, 'mpesa/STK-Response.html',context)
 	else:
