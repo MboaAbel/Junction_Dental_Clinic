@@ -7,6 +7,7 @@ from .views import (
     BookingInvoiceView,
     ReceptionBookingView,
 )
+from . import views
 
 app_name = "bookings"
 
@@ -22,6 +23,7 @@ urlpatterns = [
         BookingCreateView.as_view(),
         name="create-booking",
     ),
+    path("save-booking/<str:appointment_no>",views.SaveBooking,name="save-booking"),
     path(
         "schedule/<str:username>",
         ReceptionBookingView.as_view(),

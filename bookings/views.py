@@ -114,6 +114,34 @@ class BookingView(DoctorRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+def SaveBooking(self,appointment_no):
+  doctor = get_object_or_404(
+            User, username=username, role=User.RoleChoices.DOCTOR
+        )
+
+        # Get form data
+  date = request.POST.get("selected_date")
+  time = request.POST.get("selected_time")
+  try:
+    form = ReceptionBookingForm()
+    appointment_date = datetime.strptime(date, "%Y-%m-%d").date()
+    appointment_time = datetime.strptime(time, "%H:%M").time()
+    booking = Booking.objects.create(
+                doctor=doctor,
+                patient=request.user,
+                appointment_date=appointment_date,
+                appointment_time=appointment_time,
+                appointment_ok=appointment_no,
+            )
+
+    messages.success(request, "Appointment booked successfully!")
+  except ValueError:
+            messages.error(request, "Booking Update Failed")
+  except Exception as e:
+            messages.error(request, str(e))
+  return redirect("bookings:booking-success", booking_id=booking.id,)
+
+
 class BookingCreateView(DoctorRequiredMixin, View):
     template_name = "bookings/booking.html"
     form_class = ReceptionBookingForm
@@ -156,7 +184,7 @@ class BookingCreateView(DoctorRequiredMixin, View):
             return redirect("bookings:booking-success", booking_id=booking.id,)
 
         except ValueError:
-            messages.error(request, "Invalid date or time format")
+            messages.error(request, "Confirm with Doctors Schedule please!")
         except Exception as e:
             messages.error(request, str(e))
         return render(self.request, 'bookings/booking-form.html',{'form':form,'appointment_no':appointment_no})
